@@ -1,11 +1,11 @@
 from typing import Any, Dict, Optional, Tuple
 
 import torch
+from datasets import load_dataset
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import ConcatDataset, DataLoader, Dataset, random_split
-
-from datasets import load_dataset
 from transformers import AutoTokenizer
+
 
 class mnli_tokenization:
     def __init__(self, model_name: str, tokenizer_args: dict, cols: list):
@@ -38,25 +38,28 @@ class MNLIDataModule(LightningDataModule):
 
         self.data_test: Optional[Dataset] = None
         self.tokenizer_data = tokenizer_data
-        self.tokenization = mnli_tokenization(model_name = self.tokenizer_data['model_name'], tokenizer_args=self.tokenizer_data['args'], cols=self.cols)
+        self.tokenization = mnli_tokenization(
+            model_name=self.tokenizer_data["model_name"],
+            tokenizer_args=self.tokenizer_data["args"],
+            cols=self.cols,
+        )
 
     @property
     def num_classes(self) -> int:
         return len(self.label2id)
 
     def prepare_data(self):
-        self.data_test = load_dataset("glue", "mnli", split='validation_matched')
+        self.data_test = load_dataset("glue", "mnli", split="validation_matched")
         self.data_test = self.data_test.map(self.tokenization.process, batched=True)
 
-        self.data_test.set_format(type="torch", columns=["input_ids", "token_type_ids", "attention_mask", "label"])
+        self.data_test.set_format(
+            type="torch", columns=["input_ids", "token_type_ids", "attention_mask", "label"]
+        )
         # self.data_test = self.data_test.align_labels_with_mapping(self.label2id, "label")
-        
-        
 
     def setup(self, stage: Optional[str] = None):
         if not self.data_test:
             raise
-
 
     def train_dataloader(self):
         pass

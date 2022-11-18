@@ -5,12 +5,12 @@ from hydra.core.global_hydra import GlobalHydra
 from omegaconf import DictConfig, open_dict
 
 
-
-
 @pytest.fixture(scope="package")
 def cfg_eval_global() -> DictConfig:
     with initialize(version_base="1.2", config_path="../configs"):
-        cfg = compose(config_name="eval.yaml", return_hydra_config=True, overrides=["experiment=example"])
+        cfg = compose(
+            config_name="eval.yaml", return_hydra_config=True, overrides=["experiment=example"]
+        )
 
         # set defaults for all tests
         with open_dict(cfg):
@@ -25,8 +25,6 @@ def cfg_eval_global() -> DictConfig:
             cfg.logger = None
 
     return cfg
-
-
 
 
 # this is called by each test which uses `cfg_eval` arg

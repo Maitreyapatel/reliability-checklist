@@ -1,7 +1,7 @@
+import logging
+
 import numpy as np
 from pytorch_lightning.callbacks import Callback
-
-import logging
 
 
 class AccuracyMetric(Callback):
@@ -17,17 +17,19 @@ class AccuracyMetric(Callback):
     def on_sanity_check_end(self, trainer, pl_module):
         self.ready = True
 
-    def on_test_batch_end(
-        self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx
-    ):
+    def on_test_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
 
-        self.total += len(outputs['p2u_outputs']['raw'])
-        self.correct += np.sum(np.argmax(outputs['p2u_outputs']['raw'].logits.cpu().numpy(), axis=1)==outputs['targets']['label'].cpu().numpy())
-
+        self.total += len(outputs["p2u_outputs"]["raw"])
+        self.correct += np.sum(
+            np.argmax(outputs["p2u_outputs"]["raw"].logits.cpu().numpy(), axis=1)
+            == outputs["targets"]["label"].cpu().numpy()
+        )
 
     def on_test_epoch_end(self, trainer, pl_module):
-        
-        logging.info(f"The predicted accuracy for {self.monitor} is: {self.correct*100/self.total}%")
 
-        self.total = 0 
+        logging.info(
+            f"The predicted accuracy for {self.monitor} is: {self.correct*100/self.total}%"
+        )
+
+        self.total = 0
         self.correct = 0

@@ -3,6 +3,7 @@ from typing import Any, List
 import torch
 from pytorch_lightning import LightningModule
 
+
 class InferenceLitModule(LightningModule):
     def __init__(
         self,
@@ -11,7 +12,6 @@ class InferenceLitModule(LightningModule):
         super().__init__()
         self.save_hyperparameters(logger=False, ignore=["net"])
         self.net = net
-        
 
     def forward(self, x: torch.Tensor):
         return self.net(x)
