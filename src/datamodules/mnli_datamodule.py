@@ -16,13 +16,15 @@ class mnli_tokenization:
     def process(self, example):
         return self.tokenizer(example[self.cols[0]], example[self.cols[1]], **self.tokenizer_args)
 
+
 def process_label2id(gt_label2id, pred_label2id):
-    assert len(gt_label2id)==len(pred_label2id)
+    assert len(gt_label2id) == len(pred_label2id)
 
     dataset_converion = {}
     for i in list(gt_label2id.keys()):
         dataset_converion[i] = pred_label2id[gt_label2id[i]]
     return dataset_converion
+
 
 class MNLIDataModule(LightningDataModule):
     def __init__(
@@ -60,7 +62,9 @@ class MNLIDataModule(LightningDataModule):
         self.data_test = load_dataset("glue", "mnli", split="validation_matched")
         old_columns = set(list(self.data_test.features.keys()))
         self.data_test = self.data_test.map(self.tokenization.process, batched=True)
-        self.data_test = self.data_test.map(lambda batch: {"label": self.label_conversion[batch["label"]]}, batched=False)
+        self.data_test = self.data_test.map(
+            lambda batch: {"label": self.label_conversion[batch["label"]]}, batched=False
+        )
         new_columns = set(list(self.data_test.features.keys()))
 
         self.data_test.set_format(

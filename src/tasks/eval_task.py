@@ -38,11 +38,13 @@ def evaluate(cfg: DictConfig) -> Tuple[None, Dict[str, Any]]:
 
     log.info(f"Instantiating trainer <{cfg.trainer._target_}>")
 
-    limit_test_batches=1.0
+    limit_test_batches = 1.0
     if "limit_test_batches" in cfg.trainer:
         limit_test_batches = cfg.trainer.limit_test_batches
 
-    trainer: Trainer = hydra.utils.instantiate(cfg.trainer, logger=logger, callbacks=callbacks, limit_test_batches=limit_test_batches)
+    trainer: Trainer = hydra.utils.instantiate(
+        cfg.trainer, logger=logger, callbacks=callbacks, limit_test_batches=limit_test_batches
+    )
 
     object_dict = {
         "cfg": cfg,
