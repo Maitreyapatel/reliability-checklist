@@ -1,0 +1,4 @@
+defaults:
+  - rich_progress_bar.yaml
+  - _self_
+
