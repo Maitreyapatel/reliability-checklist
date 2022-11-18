@@ -1,4 +1,4 @@
-model_name: "ishan/bert-base-uncased-mnli"
+model_name: "roberta-large-mnli"
 tokenizer:
   model_name: ${..model_name}
   label2id:
