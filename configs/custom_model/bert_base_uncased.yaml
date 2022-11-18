@@ -1,0 +1,5 @@
+model_name: "ishan/bert-base-uncased-mnli"
+tokenizer:
+  model_name: "ishan/bert-base-uncased-mnli"
+  args:
+    truncation: true

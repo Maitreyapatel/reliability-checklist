@@ -1,0 +1,5 @@
+_target_: src.models.inference_module.InferenceLitModule
+
+net:
+  _target_: src.models.components.huggingface_basemodel.Model
+  model_name: ${custom_model.model_name}
