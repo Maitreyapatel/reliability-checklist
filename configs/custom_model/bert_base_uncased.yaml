@@ -1,5 +1,5 @@
 model_name: "ishan/bert-base-uncased-mnli"
 tokenizer:
-  model_name: "ishan/bert-base-uncased-mnli"
+  model_name: ${..model_name}
   args:
     truncation: true
