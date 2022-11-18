@@ -50,6 +50,7 @@ python src/eval.py experiment=experiment_name.yaml
 ```
 
 Specify the custom model_name as shown in following MNLI example
+
 ```bash
 # if model_name is used for tokenizer as well.
 python src/eval.py experiment=mnli custom_model.model_name="ishan/bert-base-uncased-mnli"
