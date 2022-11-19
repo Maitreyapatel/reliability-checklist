@@ -12,7 +12,7 @@ class Model(torch.nn.Module):
         return self.model(**inputs)
 
     def prediction2uniform(self, outputs):
-        preds = np.argmax(outputs.logits, axis=1)
+        preds = np.argmax(outputs.logits.cpu().numpy(), axis=1)
         p2u = [self.model.config.id2label[output.item()] for output in preds]
         return {"raw": outputs, "p2u": p2u}
 
