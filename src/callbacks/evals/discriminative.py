@@ -35,13 +35,13 @@ class AccuracyMetric(Callback):
         self.correct = 0
 
 class CalibrationMetric(Callback):
-    def __init__(self, monitor="all", correct=[], y_prob_max=[], num_bins=10):
+    def __init__(self, monitor="all", num_bins=10):
         self.total = 0
         self.monitor = monitor
         self.sanity = False
 
-        self.correct = correct
-        self.y_prob_max = y_prob_max
+        self.correct = []
+        self.y_prob_max = []
         self.num_bins = num_bins # how do we make this an user-specified input?
 
     def on_sanity_check_start(self, trainer, pl_module) -> None:
