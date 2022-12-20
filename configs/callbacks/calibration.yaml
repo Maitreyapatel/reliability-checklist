@@ -1,3 +1,6 @@
 calibration_callback:
   _target_: src.callbacks.evals.discriminative.CalibrationMetric
   monitor: "all"
+  correct: []
+  y_prob_max: []
+  num_bins: 10

@@ -35,14 +35,14 @@ class AccuracyMetric(Callback):
         self.correct = 0
 
 class CalibrationMetric(Callback):
-    def __init__(self, monitor="all"):
+    def __init__(self, monitor="all", correct=[], y_prob_max=[], num_bins=10):
         self.total = 0
-        self.correct = 0
         self.monitor = monitor
         self.sanity = False
 
-        self.num_bins = 10 # how do we make this an user-input?
-        self.y_prob_max = 0
+        self.correct = correct
+        self.y_prob_max = y_prob_max
+        self.num_bins = num_bins # how do we make this an user-specified input?
 
     def on_sanity_check_start(self, trainer, pl_module) -> None:
         self.ready = False
@@ -51,21 +51,15 @@ class CalibrationMetric(Callback):
         self.ready = True
 
     def on_test_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
-
-        if np.max(outputs["p2u_outputs"]["raw"].logits.cpu().numpy(), axis=-1) > self.y_prob_max:
-            self.y_prob_max = np.max(outputs["p2u_outputs"]["raw"].logits.cpu().numpy(), axis=-1)
-
-        self.total += len(outputs["p2u_outputs"]["raw"])
-        self.correct += np.sum(
-            np.argmax(outputs["p2u_outputs"]["raw"].logits.cpu().numpy(), axis=1)
-            == outputs["targets"]["label"].cpu().numpy()
-        )
+  
+        self.y_prob_max += np.amax(outputs["p2u_outputs"]["raw"].logits.cpu().numpy(), axis=-1).tolist()
+        self.correct += (np.argmax(outputs["p2u_outputs"]["raw"].logits.cpu().numpy(), axis=1) == outputs["targets"]["label"].cpu().numpy()).astype(int).tolist()
 
     def on_test_epoch_end(self, trainer, pl_module):
 
         bins = np.linspace(0., 1. + 1e-8, self.num_bins + 1)
-
         bin_ids = np.digitize(self.y_prob_max, bins) - 1
+
 
         bin_sums = np.bincount(bin_ids, weights=self.y_prob_max, minlength=len(bins))
         bin_true = np.bincount(bin_ids, weights=self.correct, minlength=len(bins))
@@ -80,5 +74,3 @@ class CalibrationMetric(Callback):
         logging.info(
             f"The expected calibration error for {self.monitor} is: {expected_calibration_error*100}%"
         )
-
-        self.correct = 0
