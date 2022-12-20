@@ -1,5 +1,6 @@
 import logging
 
+import matplotlib.pyplot as plt
 import numpy as np
 from pytorch_lightning.callbacks import Callback
 
@@ -54,7 +55,7 @@ class CalibrationMetric(Callback):
     def on_test_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
 
         self.y_prob_max += np.amax(
-            outputs["p2u_outputs"]["raw"].logits.cpu().numpy(), axis=-1
+            outputs["p2u_outputs"]["raw"].logits.softmax(dim=1).cpu().numpy(), axis=-1
         ).tolist()
         self.correct += (
             (
@@ -81,7 +82,38 @@ class CalibrationMetric(Callback):
         expected_calibration_error = (
             np.sum(bin_total[non_zero] * np.abs(prob_true - prob_pred)) / bin_total[non_zero].sum()
         )
-        print("Expected Calibration Error ----", expected_calibration_error)
         logging.info(
             f"The expected calibration error for {self.monitor} is: {expected_calibration_error*100}%"
         )
+
+        overconfidence_error = np.sum(
+            bin_total[non_zero]
+            * prob_pred
+            * np.max(
+                np.concatenate(
+                    ((prob_pred - prob_true).reshape(-1, 1), np.zeros((1, len(prob_pred))).T),
+                    axis=1,
+                ),
+                axis=-1,
+            )
+            / bin_total[non_zero].sum()
+        )
+        logging.info(
+            f"The overconfidence error for {self.monitor} is: {overconfidence_error*100}%"
+        )
+
+        plt.figure(figsize=(10, 10))
+        ax1 = plt.subplot2grid((3, 1), (0, 0), rowspan=2)
+        ax1.plot([0, 1], [0, 1], "k:", label="Perfectly calibrated")
+
+        ax1.plot(prob_pred, prob_true, "s-", label="$dataset_name")
+
+        ax1.set_xlabel("Confidence Probability")
+        ax1.set_ylabel("Accuracy")
+        ax1.legend(loc="lower right")
+        ax1.set_ylim([-0.05, 1.05])
+        ax1.set_title("Calibration Plot")
+
+        plt.tight_layout()
+        plt.savefig("foo.png", bbox_inches="tight")  # update file path here
+        plt.show()
