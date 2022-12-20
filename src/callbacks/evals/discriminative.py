@@ -33,3 +33,52 @@ class AccuracyMetric(Callback):
 
         self.total = 0
         self.correct = 0
+
+class CalibrationMetric(Callback):
+    def __init__(self, monitor="all"):
+        self.total = 0
+        self.correct = 0
+        self.monitor = monitor
+        self.sanity = False
+
+        self.num_bins = 10 # how do we make this an user-input?
+        self.y_prob_max = 0
+
+    def on_sanity_check_start(self, trainer, pl_module) -> None:
+        self.ready = False
+
+    def on_sanity_check_end(self, trainer, pl_module):
+        self.ready = True
+
+    def on_test_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
+
+        if np.max(outputs["p2u_outputs"]["raw"].logits.cpu().numpy(), axis=-1) > self.y_prob_max:
+            self.y_prob_max = np.max(outputs["p2u_outputs"]["raw"].logits.cpu().numpy(), axis=-1)
+
+        self.total += len(outputs["p2u_outputs"]["raw"])
+        self.correct += np.sum(
+            np.argmax(outputs["p2u_outputs"]["raw"].logits.cpu().numpy(), axis=1)
+            == outputs["targets"]["label"].cpu().numpy()
+        )
+
+    def on_test_epoch_end(self, trainer, pl_module):
+
+        bins = np.linspace(0., 1. + 1e-8, self.num_bins + 1)
+
+        bin_ids = np.digitize(self.y_prob_max, bins) - 1
+
+        bin_sums = np.bincount(bin_ids, weights=self.y_prob_max, minlength=len(bins))
+        bin_true = np.bincount(bin_ids, weights=self.correct, minlength=len(bins))
+        bin_total = np.bincount(bin_ids, minlength=len(bins))
+
+        non_zero = bin_total != 0
+        prob_true = bin_true[non_zero] / bin_total[non_zero]
+        prob_pred = bin_sums[non_zero] / bin_total[non_zero]
+
+        expected_calibration_error = np.sum(bin_total[non_zero] * np.abs(prob_true - prob_pred))/bin_total[non_zero].sum()
+        print('Expected Calibration Error ----', expected_calibration_error)
+        logging.info(
+            f"The expected calibration error for {self.monitor} is: {expected_calibration_error*100}%"
+        )
+
+        self.correct = 0
