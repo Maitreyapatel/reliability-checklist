@@ -1,12 +1,15 @@
 import logging
 
+import os
 import matplotlib.pyplot as plt
 import numpy as np
 from pytorch_lightning.callbacks import Callback
 
 
 class AccuracyMetric(Callback):
-    def __init__(self, monitor="all"):
+    def __init__(self, results_dir="", monitor="all"):
+        self.results_dir = results_dir
+
         self.total = 0
         self.correct = 0
         self.monitor = monitor
@@ -31,14 +34,16 @@ class AccuracyMetric(Callback):
         logging.info(
             f"The predicted accuracy for {self.monitor} is: {self.correct*100/self.total}%"
         )
+        with open(os.path.join(self.results_dir, 'acc.txt'), 'w') as h:
+            h.write(f"The predicted accuracy for {self.monitor} is: {self.correct*100/self.total}% \n")
 
         self.total = 0
         self.correct = 0
 
 
 class CalibrationMetric(Callback):
-    def __init__(self, monitor="all", num_bins=10):
-        self.total = 0
+    def __init__(self, results_dir="", monitor="all", num_bins=10):
+        self.results_dir = results_dir
         self.monitor = monitor
         self.sanity = False
 
@@ -102,6 +107,10 @@ class CalibrationMetric(Callback):
             f"The overconfidence error for {self.monitor} is: {overconfidence_error*100}%"
         )
 
+        with open(os.path.join(self.results_dir, 'calibration.txt'), 'w') as h:
+            h.write(f"The overconfidence error for {self.monitor} is: {overconfidence_error*100}% \n")
+            h.write(f"The expected calibration error for {self.monitor} is: {expected_calibration_error*100}% \n")
+
         plt.figure(figsize=(10, 10))
         ax1 = plt.subplot2grid((3, 1), (0, 0), rowspan=2)
         ax1.plot([0, 1], [0, 1], "k:", label="Perfectly calibrated")
@@ -115,5 +124,4 @@ class CalibrationMetric(Callback):
         ax1.set_title("Calibration Plot")
 
         plt.tight_layout()
-        plt.savefig("foo.png", bbox_inches="tight")  # update file path here
-        plt.show()
+        plt.savefig(os.path.join(self.results_dir, "calibration.png"), bbox_inches="tight")
