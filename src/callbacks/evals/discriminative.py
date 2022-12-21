@@ -1,6 +1,6 @@
 import logging
-
 import os
+
 import matplotlib.pyplot as plt
 import numpy as np
 from pytorch_lightning.callbacks import Callback
@@ -34,8 +34,11 @@ class AccuracyMetric(Callback):
         logging.info(
             f"The predicted accuracy for {self.monitor} is: {self.correct*100/self.total}%"
         )
-        with open(os.path.join(self.results_dir, 'acc.txt'), 'w') as h:
-            h.write(f"The predicted accuracy for {self.monitor} is: {self.correct*100/self.total}% \n")
+
+        if trainer.logger:
+            trainer.logger.experiment.log_metrics(
+                {f"accuracy/{self.monitor}": self.correct * 100 / self.total}
+            )
 
         self.total = 0
         self.correct = 0
@@ -107,9 +110,13 @@ class CalibrationMetric(Callback):
             f"The overconfidence error for {self.monitor} is: {overconfidence_error*100}%"
         )
 
-        with open(os.path.join(self.results_dir, 'calibration.txt'), 'w') as h:
-            h.write(f"The overconfidence error for {self.monitor} is: {overconfidence_error*100}% \n")
-            h.write(f"The expected calibration error for {self.monitor} is: {expected_calibration_error*100}% \n")
+        if trainer.logger:
+            trainer.logger.experiment.log_metrics(
+                {
+                    f"overconfidence error/{self.monitor}": overconfidence_error * 100,
+                    f"calibration error/{self.monitor}": expected_calibration_error * 100,
+                }
+            )
 
         plt.figure(figsize=(10, 10))
         ax1 = plt.subplot2grid((3, 1), (0, 0), rowspan=2)
@@ -124,4 +131,6 @@ class CalibrationMetric(Callback):
         ax1.set_title("Calibration Plot")
 
         plt.tight_layout()
-        plt.savefig(os.path.join(self.results_dir, "calibration.png"), bbox_inches="tight")
+
+        if trainer.logger:
+            plt.savefig(os.path.join(self.results_dir, "calibration.png"), bbox_inches="tight")

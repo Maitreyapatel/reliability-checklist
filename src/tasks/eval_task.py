@@ -1,6 +1,6 @@
+import os
 from typing import Any, Dict, List, Tuple
 
-import os
 import hydra
 from omegaconf import DictConfig
 from pytorch_lightning import Callback, LightningDataModule, LightningModule, Trainer
@@ -24,9 +24,6 @@ def evaluate(cfg: DictConfig) -> Tuple[None, Dict[str, Any]]:
     Returns:
         Tuple[dict, dict]: Dict with metrics and dict with all instantiated objects.
     """
-    log.info(f"Creating folder to save the results: {cfg.paths.output_dir}/results/ ")
-    os.mkdir(f"{cfg.paths.output_dir}/results/")
-
     log.info(f"Instantiating datamodule <{cfg.datamodule._target_}>")
     datamodule: LightningDataModule = hydra.utils.instantiate(cfg.datamodule)
 
