@@ -1,3 +1,4 @@
+import os
 from typing import Any, Dict, List, Tuple
 
 import hydra
@@ -23,7 +24,6 @@ def evaluate(cfg: DictConfig) -> Tuple[None, Dict[str, Any]]:
     Returns:
         Tuple[dict, dict]: Dict with metrics and dict with all instantiated objects.
     """
-
     log.info(f"Instantiating datamodule <{cfg.datamodule._target_}>")
     datamodule: LightningDataModule = hydra.utils.instantiate(cfg.datamodule)
 
