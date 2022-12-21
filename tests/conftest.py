@@ -16,7 +16,7 @@ def cfg_eval_global() -> DictConfig:
         with open_dict(cfg):
             cfg.paths.root_dir = str(pyrootutils.find_root())
             cfg.trainer.max_epochs = 1
-            cfg.trainer.limit_test_batches = 0.1
+            cfg.trainer.limit_test_batches = 0.01
             cfg.trainer.accelerator = "cpu"
             cfg.datamodule.num_workers = 0
             cfg.datamodule.pin_memory = False
