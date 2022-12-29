@@ -1,0 +1,4 @@
+test_augmentation:
+  _target_: src.augmentation.dummy_aug.DummyAug
+  _partial_: true
+  __name__: "dummy"

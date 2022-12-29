@@ -109,6 +109,24 @@ def instantiate_callbacks(callbacks_cfg: DictConfig) -> List[Callback]:
     return callbacks
 
 
+def instantiate_augmentations(augmentation_cfg: DictConfig) -> List[Callback]:
+    """Instantiates augmentations from config."""
+    augmentations: List[Callback] = []
+
+    if not augmentation_cfg:
+        log.warning("Augmentations config is empty.")
+        return augmentations
+
+    if not isinstance(augmentation_cfg, DictConfig):
+        raise TypeError("Augmentations config must be a DictConfig!")
+
+    for _, cb_conf in augmentation_cfg.items():
+        if isinstance(cb_conf, DictConfig) and "_target_" in cb_conf:
+            log.info(f"Instantiating augmentation <{cb_conf._target_}>")
+            augmentations.append(hydra.utils.instantiate(cb_conf))
+
+    return augmentations
+
 def instantiate_loggers(logger_cfg: DictConfig) -> List[LightningLoggerBase]:
     """Instantiates loggers from config."""
     logger: List[LightningLoggerBase] = []

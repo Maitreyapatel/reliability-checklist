@@ -5,6 +5,7 @@ from src.utils.utils import (
     extras,
     get_metric_value,
     instantiate_callbacks,
+    instantiate_augmentations,
     instantiate_loggers,
     log_hyperparameters,
     save_file,

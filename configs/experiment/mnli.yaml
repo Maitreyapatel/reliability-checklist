@@ -4,6 +4,7 @@
 # python train.py experiment=example
 
 defaults:
+  - override /augmentation: mnli.yaml
   - override /datamodule: mnli.yaml
   - override /model: inference.yaml
   - override /callbacks: mnli.yaml
