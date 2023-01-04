@@ -1,12 +1,12 @@
+import logging
 from typing import Any, Dict, Optional, Tuple
 
 import torch
-from datasets import load_dataset, concatenate_datasets
+from datasets import concatenate_datasets, load_dataset
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import ConcatDataset, DataLoader, Dataset, random_split
 from transformers import AutoTokenizer
 
-import logging
 
 class mnli_tokenization:
     def __init__(self, model_name: str, tokenizer_args: dict, cols: list):
@@ -55,21 +55,21 @@ class MNLIDataModule(LightningDataModule):
             cols=self.cols,
         )
         self.label_conversion = process_label2id(self.label2id, tokenizer_data.label2id)
-        
+
         self.augmentations = augmentations
 
     @property
     def num_classes(self) -> int:
         return len(self.label2id)
-    
+
     def perform_augmentations(self):
         logging.info(f"Before augmentation dataset length: {len(self.data_test)}")
 
         self.augmentations = [aug(dataset=self.data_test) for aug in self.augmentations]
         self.augmentations = [aug.get_dataset() for aug in self.augmentations]
-        self.augmented_data = concatenate_datasets(self.augmentations)
-        self.data_test = concatenate_datasets([self.data_test, self.augmented_data])
-        
+        self.data_test = concatenate_datasets(self.augmentations)
+        # self.data_test = concatenate_datasets([self.data_test, self.augmented_data])
+
         logging.info(f"After augmentation dataset length: {len(self.data_test)}")
 
     def prepare_data(self):
@@ -84,7 +84,7 @@ class MNLIDataModule(LightningDataModule):
         self.data_test.set_format(
             type="torch", columns=["label"] + list(new_columns - old_columns)
         )
-        
+
         logging.info("Performing data augmentations...")
         self.perform_augmentations()
         # self.data_test = self.data_test.align_labels_with_mapping(self.label2id, "label")

@@ -127,6 +127,7 @@ def instantiate_augmentations(augmentation_cfg: DictConfig) -> List[Callback]:
 
     return augmentations
 
+
 def instantiate_loggers(logger_cfg: DictConfig) -> List[LightningLoggerBase]:
     """Instantiates loggers from config."""
     logger: List[LightningLoggerBase] = []

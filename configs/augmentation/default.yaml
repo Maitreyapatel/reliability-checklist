@@ -1,2 +1,3 @@
 defaults:
+  - no_aug.yaml
   - dummy_aug.yaml

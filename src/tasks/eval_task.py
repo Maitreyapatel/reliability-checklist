@@ -24,11 +24,13 @@ def evaluate(cfg: DictConfig) -> Tuple[None, Dict[str, Any]]:
     Returns:
         Tuple[dict, dict]: Dict with metrics and dict with all instantiated objects.
     """
-    log.info(f"Instantiating augmentations...")
+    log.info("Instantiating augmentations...")
     augments: List = utils.instantiate_augmentations(cfg.augmentation)
-    
+
     log.info(f"Instantiating datamodule <{cfg.datamodule._target_}>")
-    datamodule: LightningDataModule = hydra.utils.instantiate(cfg.datamodule, augmentations=augments)
+    datamodule: LightningDataModule = hydra.utils.instantiate(
+        cfg.datamodule, augmentations=augments
+    )
 
     log.info(f"Instantiating model <{cfg.model._target_}>")
     model: LightningModule = hydra.utils.instantiate(cfg.model)

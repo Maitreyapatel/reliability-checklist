@@ -1,86 +1,174 @@
 import logging
 import os
+from copy import deepcopy
 
 import matplotlib.pyplot as plt
 import numpy as np
+import torch
 from pytorch_lightning.callbacks import Callback
 
 
-class AccuracyMetric(Callback):
-    def __init__(self, results_dir="", monitor="all"):
+class MonitorBasedMetric(Callback):
+    def __init__(self, monitor, name, results_dir) -> None:
         self.results_dir = results_dir
-
-        self.total = 0
-        self.correct = 0
         self.monitor = monitor
+        self.name = name
+
         self.sanity = False
+        self.storage = {}
 
     def on_sanity_check_start(self, trainer, pl_module) -> None:
         self.ready = False
 
-    def on_sanity_check_end(self, trainer, pl_module):
+    def on_sanity_check_end(self, trainer, pl_module) -> None:
         self.ready = True
 
-    def on_test_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
+    def store(self, key, results) -> None:
+        if key not in self.storage:
+            self.storage[key] = self.init_logic()
 
-        self.total += len(outputs["p2u_outputs"]["raw"])
-        self.correct += np.sum(
-            np.argmax(outputs["p2u_outputs"]["raw"].logits.cpu().numpy(), axis=1)
-            == outputs["targets"]["label"].cpu().numpy()
-        )
+        for k, v in results.items():
+            if isinstance(v, (int, float, np.int, np.int32, np.int64, np.float)):
+                self.storage[key][k].append(v)
+            elif isinstance(v, list):
+                self.storage[key][k] += v
+            else:
+                raise NotImplementedError
+
+    def divide_data(self, outputs, batch) -> dict:
+        def copy_batch(bt):
+            new_bt = {}
+            for k, v in bt.items():
+                new_bt[k] = []
+            return new_bt
+
+        def copy_output(out):
+            new_out = {}
+            for k, v in out.items():
+                new_out[k] = {}
+                for k1, v1 in v.items():
+                    new_out[k][k1] = []
+            return new_out
+
+        def save_batch(gd, ag, bt, en):
+            for k, v in bt.items():
+                gd[ag][1][k].append(v[en])
+            return gd
+
+        def save_output(gd, ag, out, en):
+            for k, v in out.items():
+                for k1, v1 in v.items():
+                    gd[ag][0][k][k1].append(v1[en])
+            return gd
+
+        grouped_data = {"all": (outputs, batch)}
+        for en, aug in enumerate(batch["augmentation"]):
+            if aug not in grouped_data:
+                grouped_data[aug] = (copy_output(outputs), copy_batch(batch))
+
+            grouped_data = save_output(grouped_data, aug, outputs, en)
+            grouped_data = save_batch(grouped_data, aug, batch, en)
+
+        for k, _ in grouped_data.items():
+            # batch post process
+            for k1, v1 in grouped_data[k][1].items():
+                if isinstance(batch[k1], torch.Tensor) and not isinstance(v1, torch.Tensor):
+                    grouped_data[k][1][k1] = torch.stack(v1)
+
+            # output post process
+            for k1, v1 in grouped_data[k][0].items():
+                for k2, v2 in grouped_data[k][0][k1].items():
+                    if isinstance(outputs[k1][k2], torch.Tensor) and not isinstance(
+                        v2, torch.Tensor
+                    ):
+                        grouped_data[k][0][k1][k2] = torch.stack(v2)
+
+        return grouped_data
+
+    def init_logic(self) -> dict:
+        raise NotImplementedError
+
+    def batch_logic(self, outputs, batch) -> dict:
+        raise NotImplementedError
+
+    def end_logic(self, saved) -> dict:
+        raise NotImplementedError
+
+    def save_logic(self, monitor, trainer, result, extra) -> None:
+        raise NotImplementedError
+
+    def on_test_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
+        grouped_data = self.divide_data(outputs, batch)
+        for k, (out, bt) in grouped_data.items():
+            result = self.batch_logic(out, bt)
+            self.store(k, result)
 
     def on_test_epoch_end(self, trainer, pl_module):
-
-        logging.info(
-            f"The predicted accuracy for {self.monitor} is: {self.correct*100/self.total}%"
-        )
-
-        if trainer.logger:
-            trainer.logger.experiment.log_metrics(
-                {f"accuracy/{self.monitor}": self.correct * 100 / self.total}
+        for k, saved in self.storage.items():
+            result, extra = self.end_logic(saved)
+            logging.info(
+                f"The model performance on {self.name} for {k} subset of data is {result}."
             )
+            self.save_logic(k, trainer, result, extra)
 
-        self.total = 0
-        self.correct = 0
+        self.storage = {}
 
 
-class CalibrationMetric(Callback):
-    def __init__(self, results_dir="", monitor="all", num_bins=10):
-        self.results_dir = results_dir
-        self.monitor = monitor
-        self.sanity = False
+class AccuracyMetric(MonitorBasedMetric):
+    def __init__(self, monitor="all", name="acc", results_dir=""):
+        super().__init__(monitor, name, results_dir)
 
-        self.correct = []
-        self.y_prob_max = []
-        self.num_bins = num_bins  # how do we make this an user-specified input?
+    def init_logic(self) -> dict:
+        return {"total": [], "correct": []}
 
-    def on_sanity_check_start(self, trainer, pl_module) -> None:
-        self.ready = False
+    def batch_logic(self, outputs, batch):
+        result = {
+            "total": len(outputs["p2u_outputs"]["logits"]),
+            "correct": np.sum(
+                np.argmax(outputs["p2u_outputs"]["logits"].cpu().numpy(), axis=1)
+                == outputs["targets"]["label"].cpu().numpy()
+            ),
+        }
+        return result
 
-    def on_sanity_check_end(self, trainer, pl_module):
-        self.ready = True
+    def end_logic(self, saved) -> dict:
+        result = {"accuracy": sum(saved["correct"]) * 100 / sum(saved["total"])}
+        extra = None
+        return result, extra
 
-    def on_test_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
+    def save_logic(self, monitor, trainer, result, extra) -> None:
+        if trainer.logger:
+            trainer.logger.experiment.log_metrics({f"accuracy/{monitor}": result})
 
-        self.y_prob_max += np.amax(
-            outputs["p2u_outputs"]["raw"].logits.softmax(dim=1).cpu().numpy(), axis=-1
-        ).tolist()
-        self.correct += (
-            (
-                np.argmax(outputs["p2u_outputs"]["raw"].logits.cpu().numpy(), axis=1)
+
+class CalibrationMetric(MonitorBasedMetric):
+    def __init__(self, monitor="all", name="calibration", results_dir="", num_bins=10):
+        super().__init__(monitor, name, results_dir)
+        self.num_bins = num_bins
+
+    def init_logic(self) -> dict:
+        return {"y_prob_max": [], "correct": []}
+
+    def batch_logic(self, outputs, batch) -> dict:
+        result = {
+            "y_prob_max": np.amax(
+                outputs["p2u_outputs"]["logits"].softmax(dim=1).cpu().numpy(), axis=-1
+            ).tolist(),
+            "correct": (
+                np.argmax(outputs["p2u_outputs"]["logits"].cpu().numpy(), axis=1)
                 == outputs["targets"]["label"].cpu().numpy()
             )
             .astype(int)
-            .tolist()
-        )
+            .tolist(),
+        }
+        return result
 
-    def on_test_epoch_end(self, trainer, pl_module):
-
+    def end_logic(self, saved) -> dict:
         bins = np.linspace(0.0, 1.0 + 1e-8, self.num_bins + 1)
-        bin_ids = np.digitize(self.y_prob_max, bins) - 1
+        bin_ids = np.digitize(saved["y_prob_max"], bins) - 1
 
-        bin_sums = np.bincount(bin_ids, weights=self.y_prob_max, minlength=len(bins))
-        bin_true = np.bincount(bin_ids, weights=self.correct, minlength=len(bins))
+        bin_sums = np.bincount(bin_ids, weights=saved["y_prob_max"], minlength=len(bins))
+        bin_true = np.bincount(bin_ids, weights=saved["correct"], minlength=len(bins))
         bin_total = np.bincount(bin_ids, minlength=len(bins))
 
         non_zero = bin_total != 0
@@ -89,9 +177,6 @@ class CalibrationMetric(Callback):
 
         expected_calibration_error = (
             np.sum(bin_total[non_zero] * np.abs(prob_true - prob_pred)) / bin_total[non_zero].sum()
-        )
-        logging.info(
-            f"The expected calibration error for {self.monitor} is: {expected_calibration_error*100}%"
         )
 
         overconfidence_error = np.sum(
@@ -106,15 +191,22 @@ class CalibrationMetric(Callback):
             )
             / bin_total[non_zero].sum()
         )
-        logging.info(
-            f"The overconfidence error for {self.monitor} is: {overconfidence_error*100}%"
-        )
 
+        result = {
+            "expected_calibration_error": expected_calibration_error,
+            "overconfidence_error": overconfidence_error,
+        }
+
+        extra = {"prob_pred": prob_pred, "prob_true": prob_true}
+
+        return result, extra
+
+    def save_logic(self, monitor, trainer, result, extra) -> None:
         if trainer.logger:
             trainer.logger.experiment.log_metrics(
                 {
-                    f"overconfidence error/{self.monitor}": overconfidence_error * 100,
-                    f"calibration error/{self.monitor}": expected_calibration_error * 100,
+                    f"overconfidence error/{monitor}": result["overconfidence_error"] * 100,
+                    f"calibration error/{monitor}": result["expected_calibration_error"] * 100,
                 }
             )
 
@@ -122,7 +214,7 @@ class CalibrationMetric(Callback):
         ax1 = plt.subplot2grid((3, 1), (0, 0), rowspan=2)
         ax1.plot([0, 1], [0, 1], "k:", label="Perfectly calibrated")
 
-        ax1.plot(prob_pred, prob_true, "s-", label="$dataset_name")
+        ax1.plot(extra["prob_pred"], extra["prob_true"], "s-", label="$dataset_name")
 
         ax1.set_xlabel("Confidence Probability")
         ax1.set_ylabel("Accuracy")
@@ -133,4 +225,6 @@ class CalibrationMetric(Callback):
         plt.tight_layout()
 
         if trainer.logger:
-            plt.savefig(os.path.join(self.results_dir, "calibration.png"), bbox_inches="tight")
+            plt.savefig(
+                os.path.join(self.results_dir, f"calibration_{monitor}.png"), bbox_inches="tight"
+            )
