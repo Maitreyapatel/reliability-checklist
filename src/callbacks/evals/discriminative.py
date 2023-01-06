@@ -96,6 +96,11 @@ class MonitorBasedMetric(Callback):
 
     def save_logic(self, monitor, trainer, result, extra) -> None:
         raise NotImplementedError
+    
+    def default_save_logic(self, monitor, trainer, result, extra) -> None:
+        if trainer.logger:
+            for key, val in result.items():
+                trainer.logger.experiment.log_metrics({f"{key}/{monitor}": val})
 
     def on_test_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
         grouped_data = self.divide_data(outputs, batch)
@@ -109,6 +114,7 @@ class MonitorBasedMetric(Callback):
             logging.info(
                 f"The model performance on {self.name} for {k} subset of data is {result}."
             )
+            self.default_save_logic(k, trainer, result, extra)
             self.save_logic(k, trainer, result, extra)
 
         self.storage = {}
@@ -137,8 +143,7 @@ class AccuracyMetric(MonitorBasedMetric):
         return result, extra
 
     def save_logic(self, monitor, trainer, result, extra) -> None:
-        if trainer.logger:
-            trainer.logger.experiment.log_metrics({f"accuracy/{monitor}": result})
+        pass
 
 
 class CalibrationMetric(MonitorBasedMetric):
@@ -202,14 +207,6 @@ class CalibrationMetric(MonitorBasedMetric):
         return result, extra
 
     def save_logic(self, monitor, trainer, result, extra) -> None:
-        if trainer.logger:
-            trainer.logger.experiment.log_metrics(
-                {
-                    f"overconfidence error/{monitor}": result["overconfidence_error"] * 100,
-                    f"calibration error/{monitor}": result["expected_calibration_error"] * 100,
-                }
-            )
-
         plt.figure(figsize=(10, 10))
         ax1 = plt.subplot2grid((3, 1), (0, 0), rowspan=2)
         ax1.plot([0, 1], [0, 1], "k:", label="Perfectly calibrated")
