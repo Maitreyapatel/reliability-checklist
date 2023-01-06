@@ -96,7 +96,7 @@ class MonitorBasedMetric(Callback):
 
     def save_logic(self, monitor, trainer, result, extra) -> None:
         raise NotImplementedError
-    
+
     def default_save_logic(self, monitor, trainer, result, extra) -> None:
         if trainer.logger:
             for key, val in result.items():
