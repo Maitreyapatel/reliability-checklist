@@ -13,16 +13,16 @@ class InferenceLitModule(LightningModule):
         self.save_hyperparameters(logger=False, ignore=["net"])
         self.net = net
 
-    def forward(self, x: torch.Tensor):
-        return self.net(x)
+    def forward(self, x: torch.Tensor, y: torch.Tensor):
+        return self.net(x, labels=y)
 
     def on_train_start(self):
         pass
 
     def step(self, batch: Any):
         x, y = self.net.input2uniform(batch)
-        outputs = self.forward(x)
-        return outputs, y
+        outputs = self.forward(x, y["label"])
+        return outputs, y["label"]
 
     def training_step(self, batch: Any, batch_idx: int):
         pass
@@ -38,7 +38,7 @@ class InferenceLitModule(LightningModule):
 
     def test_step(self, batch: Any, batch_idx: int):
         outputs, targets = self.step(batch)
-        return {"p2u_outputs": self.net.prediction2uniform(outputs), "targets": targets}
+        return {"p2u_outputs": self.net.prediction2uniform(outputs, targets)}
 
     def test_epoch_end(self, outputs: List[Any]):
         pass

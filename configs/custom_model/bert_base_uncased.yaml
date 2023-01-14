@@ -1,9 +1,16 @@
 model_name: "ishan/bert-base-uncased-mnli"
+model_type: "discriminative"
+decoder_model_name: null
+model_path: null
+tie_embeddings: false
+label: null
+tie_encoder_decoder: false
+
 tokenizer:
   model_name: ${..model_name}
   label2id:
-    contradiction: 0
-    neutral: 1
+    contradiction: 1
+    neutral: 0
     entailment: 2
   args:
     truncation: true

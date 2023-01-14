@@ -47,7 +47,12 @@ class MonitorBasedMetric(Callback):
             for k, v in out.items():
                 new_out[k] = {}
                 for k1, v1 in v.items():
-                    new_out[k][k1] = []
+                    if not isinstance(v1, dict):
+                        new_out[k][k1] = []
+                    else:
+                        new_out[k][k1] = {}
+                        for k2, v2 in v1.items():
+                            new_out[k][k1][k2] = []
             return new_out
 
         def save_batch(gd, ag, bt, en):
@@ -58,7 +63,11 @@ class MonitorBasedMetric(Callback):
         def save_output(gd, ag, out, en):
             for k, v in out.items():
                 for k1, v1 in v.items():
-                    gd[ag][0][k][k1].append(v1[en])
+                    if not isinstance(v1, dict):
+                        gd[ag][0][k][k1].append(v1[en])
+                    else:
+                        for k2, v2 in v1.items():
+                            gd[ag][0][k][k1][k2].append(v2[en])
             return gd
 
         grouped_data = {"all": (outputs, batch)}
@@ -72,16 +81,26 @@ class MonitorBasedMetric(Callback):
         for k, _ in grouped_data.items():
             # batch post process
             for k1, v1 in grouped_data[k][1].items():
-                if isinstance(batch[k1], torch.Tensor) and not isinstance(v1, torch.Tensor):
+                if isinstance(batch[k1], torch.Tensor) and not isinstance(
+                    v1, torch.Tensor
+                ):
                     grouped_data[k][1][k1] = torch.stack(v1)
 
             # output post process
             for k1, v1 in grouped_data[k][0].items():
                 for k2, v2 in grouped_data[k][0][k1].items():
-                    if isinstance(outputs[k1][k2], torch.Tensor) and not isinstance(
-                        v2, torch.Tensor
+                    if (
+                        not isinstance(v2, dict)
+                        and isinstance(outputs[k1][k2], torch.Tensor)
+                        and not isinstance(v2, torch.Tensor)
                     ):
                         grouped_data[k][0][k1][k2] = torch.stack(v2)
+                    elif isinstance(v2, dict):
+                        for k3, v3 in v2.items():
+                            if isinstance(
+                                outputs[k1][k2][k3], torch.Tensor
+                            ) and not isinstance(v3, torch.Tensor):
+                                grouped_data[k][0][k1][k2][k3] = torch.stack(v3)
 
         return grouped_data
 
@@ -102,7 +121,9 @@ class MonitorBasedMetric(Callback):
             for key, val in result.items():
                 trainer.logger.experiment.log_metrics({f"{key}/{monitor}": val})
 
-    def on_test_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
+    def on_test_batch_end(
+        self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx
+    ):
         grouped_data = self.divide_data(outputs, batch)
         for k, (out, bt) in grouped_data.items():
             result = self.batch_logic(out, bt)
@@ -132,7 +153,7 @@ class AccuracyMetric(MonitorBasedMetric):
             "total": len(outputs["p2u_outputs"]["logits"]),
             "correct": np.sum(
                 np.argmax(outputs["p2u_outputs"]["logits"].cpu().numpy(), axis=1)
-                == outputs["targets"]["label"].cpu().numpy()
+                == outputs["p2u_outputs"]["p2u"]["labels"].cpu().numpy()
             ),
         }
         return result
@@ -161,7 +182,7 @@ class CalibrationMetric(MonitorBasedMetric):
             ).tolist(),
             "correct": (
                 np.argmax(outputs["p2u_outputs"]["logits"].cpu().numpy(), axis=1)
-                == outputs["targets"]["label"].cpu().numpy()
+                == outputs["p2u_outputs"]["p2u"]["labels"].cpu().numpy()
             )
             .astype(int)
             .tolist(),
@@ -172,7 +193,9 @@ class CalibrationMetric(MonitorBasedMetric):
         bins = np.linspace(0.0, 1.0 + 1e-8, self.num_bins + 1)
         bin_ids = np.digitize(saved["y_prob_max"], bins) - 1
 
-        bin_sums = np.bincount(bin_ids, weights=saved["y_prob_max"], minlength=len(bins))
+        bin_sums = np.bincount(
+            bin_ids, weights=saved["y_prob_max"], minlength=len(bins)
+        )
         bin_true = np.bincount(bin_ids, weights=saved["correct"], minlength=len(bins))
         bin_total = np.bincount(bin_ids, minlength=len(bins))
 
@@ -181,7 +204,8 @@ class CalibrationMetric(MonitorBasedMetric):
         prob_pred = bin_sums[non_zero] / bin_total[non_zero]
 
         expected_calibration_error = (
-            np.sum(bin_total[non_zero] * np.abs(prob_true - prob_pred)) / bin_total[non_zero].sum()
+            np.sum(bin_total[non_zero] * np.abs(prob_true - prob_pred))
+            / bin_total[non_zero].sum()
         )
 
         overconfidence_error = np.sum(
@@ -189,7 +213,10 @@ class CalibrationMetric(MonitorBasedMetric):
             * prob_pred
             * np.max(
                 np.concatenate(
-                    ((prob_pred - prob_true).reshape(-1, 1), np.zeros((1, len(prob_pred))).T),
+                    (
+                        (prob_pred - prob_true).reshape(-1, 1),
+                        np.zeros((1, len(prob_pred))).T,
+                    ),
                     axis=1,
                 ),
                 axis=-1,
@@ -223,5 +250,6 @@ class CalibrationMetric(MonitorBasedMetric):
 
         if trainer.logger:
             plt.savefig(
-                os.path.join(self.results_dir, f"calibration_{monitor}.png"), bbox_inches="tight"
+                os.path.join(self.results_dir, f"calibration_{monitor}.png"),
+                bbox_inches="tight",
             )
