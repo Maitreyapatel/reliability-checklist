@@ -9,13 +9,33 @@ from transformers import AutoTokenizer
 
 
 class mnli_tokenization:
-    def __init__(self, model_name: str, tokenizer_args: dict, cols: list):
+    def __init__(
+        self,
+        model_name: str,
+        is_generative_model: bool,
+        tokenizer_args: dict,
+        data_processing: dict,
+        label2id: dict,
+        cols: list,
+        label_col: str,
+    ):
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.is_generative_model = is_generative_model
+        self.data_processing = data_processing
         self.tokenizer_args = tokenizer_args
+        self.label2id = label2id
+        self.label_col = label_col
         self.cols = cols
 
     def process(self, example):
-        return self.tokenizer(example[self.cols[0]], example[self.cols[1]], **self.tokenizer_args)
+        return self.tokenizer(example["input_data"], **self.tokenizer_args)
+
+    def process_label(self, example):
+        # TODO: need to make sure that output is consistent and stored as `label` column
+        return self.tokenizer(
+            self.label2id[example[self.label_col]],
+            **self.tokenizer_args,
+        )
 
 
 def process_label2id(gt_label2id, pred_label2id):
@@ -31,11 +51,13 @@ class MNLIDataModule(LightningDataModule):
     def __init__(
         self,
         tokenizer_data: dict,
+        model_type: str,
         data_dir: str = "data/",
         batch_size: int = 1,
         num_workers: int = 0,
         pin_memory: bool = False,
         augmentations: list = [],
+        data_processing: dict = {},
     ):
         super().__init__()
 
@@ -49,9 +71,16 @@ class MNLIDataModule(LightningDataModule):
 
         self.data_test: Optional[Dataset] = None
         self.tokenizer_data = tokenizer_data
+        self.data_processing = data_processing
+        self.is_generative_model = False if model_type == "discriminative" else True
+
         self.tokenization = mnli_tokenization(
             model_name=self.tokenizer_data["model_name"],
+            is_generative_model=self.is_generative_model,
             tokenizer_args=self.tokenizer_data["args"],
+            data_processing=self.data_processing,
+            label2id=self.label2id,
+            label_col="label",
             cols=self.cols,
         )
         self.label_conversion = process_label2id(self.label2id, tokenizer_data.label2id)
@@ -72,21 +101,70 @@ class MNLIDataModule(LightningDataModule):
 
         logging.info(f"After augmentation dataset length: {len(self.data_test)}")
 
+    def custom_prepocess(self, dataset):
+        if self.data_processing.columns:
+            for column_name, column_prefix in self.data_processing.columns.items():
+                dataset[column_name] = column_prefix + dataset[column_name]
+
+        dataset = dataset.map(
+            lambda example: {
+                "input_data": self.data_processing.seprator.join(
+                    [example[col] for col in self.cols]
+                )
+            },
+            remove_columns=self.cols,
+            batched=False,
+        )
+
+        if self.data_processing.header:
+            dataset = dataset.map(
+                lambda example: {
+                    "input_data": self.data_processing.seprator.join(
+                        [self.data_processing.header] + [example["input_data"]]
+                    )
+                },
+                batched=False,
+            )
+
+        if self.data_processing.footer:
+            dataset = dataset.map(
+                lambda example: {
+                    "input_data": self.data_processing.seprator.join(
+                        [example["input_data"]] + [self.data_processing.footer]
+                    )
+                },
+                batched=False,
+            )
+
+        return dataset
+
     def prepare_data(self):
         self.data_test = load_dataset("glue", "mnli", split="validation_matched")
+        logging.info("Performing data augmentations...")
+        self.perform_augmentations()
+
+        logging.info("Pre-processing the data...")
+        self.data_test = self.custom_prepocess(dataset=self.data_test)
+
+        logging.info("Performing tokenization...")
         old_columns = set(list(self.data_test.features.keys()))
         self.data_test = self.data_test.map(self.tokenization.process, batched=True)
-        self.data_test = self.data_test.map(
-            lambda batch: {"label": self.label_conversion[batch["label"]]}, batched=False
-        )
+        if not self.is_generative_model:
+            self.data_test = self.data_test.map(
+                lambda batch: {"label": self.label_conversion[batch["label"]]},
+                batched=False,
+            )
+        else:
+            self.data_test = self.data_test.map(
+                self.tokenization.process_label, batched=False
+            )
+
         new_columns = set(list(self.data_test.features.keys()))
 
         self.data_test.set_format(
-            type="torch", columns=["label"] + list(new_columns - old_columns)
+            type="torch",
+            columns=["label", "augmentation"] + list(new_columns - old_columns),
         )
-
-        logging.info("Performing data augmentations...")
-        self.perform_augmentations()
         # self.data_test = self.data_test.align_labels_with_mapping(self.label2id, "label")
 
     def setup(self, stage: Optional[str] = None):

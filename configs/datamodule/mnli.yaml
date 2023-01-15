@@ -4,3 +4,5 @@ batch_size: 1
 num_workers: 0
 pin_memory: False
 tokenizer_data: ${custom_model.tokenizer}
+model_type: ${custom_model.model_type}
+data_processing: ${custom_model.data_processing}
