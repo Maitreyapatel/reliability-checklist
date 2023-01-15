@@ -5,13 +5,14 @@ import torch
 from datasets import concatenate_datasets, load_dataset
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import ConcatDataset, DataLoader, Dataset, random_split
-from transformers import AutoTokenizer
+from transformers import AutoTokenizer, T5Tokenizer
 
 
 class mnli_tokenization:
     def __init__(
         self,
         model_name: str,
+        model_type: str,
         is_generative_model: bool,
         tokenizer_args: dict,
         data_processing: dict,
@@ -19,7 +20,10 @@ class mnli_tokenization:
         cols: list,
         label_col: str,
     ):
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        if model_type != "t5":
+            self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        else:
+            self.tokenizer = T5Tokenizer.from_pretrained(model_name)
         self.is_generative_model = is_generative_model
         self.data_processing = data_processing
         self.tokenizer_args = tokenizer_args
@@ -32,9 +36,8 @@ class mnli_tokenization:
 
     def process_label(self, example):
         # TODO: need to make sure that output is consistent and stored as `label` column
-        return self.tokenizer(
-            self.label2id[example[self.label_col]],
-            **self.tokenizer_args,
+        return self.tokenizer.convert_tokens_to_ids(
+            example[self.label_col],
         )
 
 
@@ -80,10 +83,10 @@ class MNLIDataModule(LightningDataModule):
             tokenizer_args=self.tokenizer_data["args"],
             data_processing=self.data_processing,
             label2id=self.label2id,
+            model_type=model_type,
             label_col="label",
             cols=self.cols,
         )
-        self.label_conversion = process_label2id(self.label2id, tokenizer_data.label2id)
 
         self.augmentations = augmentations
 
@@ -104,7 +107,12 @@ class MNLIDataModule(LightningDataModule):
     def custom_prepocess(self, dataset):
         if self.data_processing.columns:
             for column_name, column_prefix in self.data_processing.columns.items():
-                dataset[column_name] = column_prefix + dataset[column_name]
+                dataset = dataset.map(
+                    lambda example: {
+                        column_name: " ".join([column_prefix, example[column_name]])
+                    },
+                    batched=False,
+                )
 
         dataset = dataset.map(
             lambda example: {
@@ -149,15 +157,27 @@ class MNLIDataModule(LightningDataModule):
         logging.info("Performing tokenization...")
         old_columns = set(list(self.data_test.features.keys()))
         self.data_test = self.data_test.map(self.tokenization.process, batched=True)
-        if not self.is_generative_model:
+        self.label_conversion = process_label2id(
+            self.label2id, self.tokenizer_data.label2id
+        )
+        self.data_test = self.data_test.map(
+            lambda batch: {"converted_label": self.label_conversion[batch["label"]]},
+            batched=False,
+            remove_columns=["label"],
+        )
+        self.data_test = self.data_test.rename_column("converted_label", "label")
+
+        if self.is_generative_model:
             self.data_test = self.data_test.map(
-                lambda batch: {"label": self.label_conversion[batch["label"]]},
+                lambda batch: {
+                    "converted_label": self.tokenization.tokenizer.convert_tokens_to_ids(
+                        batch["label"]
+                    )
+                },
                 batched=False,
+                remove_columns=["label"],
             )
-        else:
-            self.data_test = self.data_test.map(
-                self.tokenization.process_label, batched=False
-            )
+            self.data_test = self.data_test.rename_column("converted_label", "label")
 
         new_columns = set(list(self.data_test.features.keys()))
 

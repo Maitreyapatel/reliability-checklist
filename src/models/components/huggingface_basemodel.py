@@ -9,14 +9,18 @@ class Model(torch.nn.Module):
         self,
         model_name: str,
         model_type: str,
+        additional_model_inputs: dict,
         decoder_model_name: str,
         model_path: str,
         tie_embeddings: bool,
         label: Any,
         tie_encoder_decoder: bool,
+        tokenizer_data: dict,
     ):
         super().__init__()
         self.is_generative_model = False if model_type == "discriminative" else True
+        self.tokenizer_data = tokenizer_data
+        self.additional_model_inputs = additional_model_inputs
 
         self.model, self.tokenizer = get_model(
             model=model_type,
@@ -29,27 +33,53 @@ class Model(torch.nn.Module):
             tie_encoder_decoder=tie_encoder_decoder,
         )
 
+        if not self.is_generative_model:
+            self.id2label = self.model.config.id2label
+        else:
+            self.label_inds = self.tokenizer.convert_tokens_to_ids(
+                list(self.tokenizer_data.label2id.values())
+            )
+            self.inds2label = {
+                k: v
+                for k, v in zip(
+                    self.label_inds, list(self.tokenizer_data.label2id.keys())
+                )
+            }
+
+            self.inds2idx = {k: en for en, k in enumerate(sorted(self.label_inds))}
+            self.idx2inds = {v: k for k, v in self.inds2idx.items()}
+
     def forward(self, inputs, labels):
-        return self.model(**inputs, labels=labels)
+        if self.additional_model_inputs:
+            for k, v in self.additional_model_inputs.items():
+                inputs[k] = v
+
+        if not self.is_generative_model:
+            return self.model(**inputs)
+        else:
+            return self.model.generate(**inputs)  # , **self.additional_model_inputs)
 
     def discriptive_postprocess(self, outputs, targets):
         preds = np.argmax(outputs.logits.cpu().numpy(), axis=1)
-        p2u = [self.model.config.id2label[output.item()] for output in preds]
+        p2u = [self.id2label[output.item()] for output in preds]
         return {
             "logits": outputs.logits,
             "p2u": {"predictions": p2u, "labels": targets},
         }
 
     def generative_postprocess(self, outputs, targets):
-        predictions = self.tokenizer.batch_decode(
-            outputs.preds, skip_special_tokens=True, clean_up_tokenization_spaces=True
-        )
-        labels = self.tokenizer.batch_decode(
-            targets, skip_special_tokens=True, clean_up_tokenization_spaces=True
+        scores = outputs.scores[0]
+        logits = scores[:, self.label_inds]
+
+        preds = np.argmax(logits.cpu().numpy(), axis=1)
+        p2u = [self.inds2label[self.idx2inds[output.item()]] for output in preds]
+
+        labels = torch.tensor([self.inds2idx[y] for y in targets.cpu().numpy()]).to(
+            targets.device
         )
         return {
-            "logits": outputs.logits,
-            "p2u": {"predictions": predictions, "labels": labels},
+            "logits": logits,
+            "p2u": {"predictions": p2u, "labels": labels},
         }
 
     def prediction2uniform(self, outputs, targets):

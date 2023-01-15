@@ -9,3 +9,5 @@ net:
   tie_embeddings: ${custom_model.tie_embeddings}
   label: ${custom_model.label}
   tie_encoder_decoder: ${custom_model.tie_encoder_decoder}
+  tokenizer_data: ${custom_model.tokenizer}
+  additional_model_inputs: ${custom_model.additional_model_inputs}

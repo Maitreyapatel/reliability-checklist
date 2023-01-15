@@ -8,6 +8,7 @@ debugpy==1.6.3
 numpy==1.19.5
 transformers==4.24.0
 matplotlib==3.6.2
+sentencepiece==0.1.97
 
 # --------- hydra --------- #
 hydra-core==1.2.0

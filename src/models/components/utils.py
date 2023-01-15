@@ -21,9 +21,14 @@ def get_model(
 
     res_model = None
     if tokenizer is None:
-        from transformers import AutoTokenizer
+        if model != "t5":
+            from transformers import AutoTokenizer
 
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
+            tokenizer = AutoTokenizer.from_pretrained(model_name)
+        else:
+            from transformers import T5Tokenizer
+
+            tokenizer = T5Tokenizer.from_pretrained(model_name)
 
     model_list = [
         "encode-decode",
