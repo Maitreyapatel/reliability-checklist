@@ -1,24 +1,22 @@
 ## below parameters are self-explanatory
-model_name: "alan-turing-institute/mt5-large-finetuned-mnli-xtreme-xnli"
-model_type: "t5" ## you can only have following types: "encode-decode","decoder-only","bart","discriminative","shared","hybrid","t5",
+model_name: "navteca/bart-large-mnli"
+model_type: "discriminative" ## you can only have following types: "encode-decode","decoder-only","bart","discriminative","shared","hybrid","t5",
 decoder_model_name: null
 model_path: null ## provide the path if you have custom trained model using transformers library
 tie_embeddings: false
 label: null
 tie_encoder_decoder: false
-pipeline:  null
+pipeline: 'zero-shot-classification'
 
 additional_model_inputs:
-  output_scores: true
-  return_dict_in_generate: true
-  num_beams: 1
+  multi_label: false
 
 tokenizer:
   model_name: ${..model_name} ## only specify the name from huggingface if it's different than the actual  model
   label2id: ## this will vary based on the evaluation data, please refer to the your selected dataset config
-    contradiction: "_2"
-    neutral: "▁1"
-    entailment: "▁0"
+    contradiction: 0
+    neutral: 1
+    entailment: 2
   args:
     truncation: true
 

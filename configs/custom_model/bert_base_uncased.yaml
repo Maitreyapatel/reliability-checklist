@@ -6,6 +6,7 @@ model_path: null ## provide the path if you have custom trained model using tran
 tie_embeddings: false
 label: null
 tie_encoder_decoder: false
+pipeline: null
 
 additional_model_inputs: null ## specify the additional pre-defined input to model like bean_search for generative models
 

@@ -3,6 +3,9 @@ import torch
 from .utils import get_model
 from typing import Any
 
+from transformers import pipeline
+import logging
+
 
 class Model(torch.nn.Module):
     def __init__(
@@ -16,11 +19,13 @@ class Model(torch.nn.Module):
         label: Any,
         tie_encoder_decoder: bool,
         tokenizer_data: dict,
+        pipeline_name: str,
     ):
         super().__init__()
         self.is_generative_model = False if model_type == "discriminative" else True
         self.tokenizer_data = tokenizer_data
         self.additional_model_inputs = additional_model_inputs
+        self.pipeline_name = pipeline_name
 
         self.model, self.tokenizer = get_model(
             model=model_type,
@@ -33,31 +38,48 @@ class Model(torch.nn.Module):
             tie_encoder_decoder=tie_encoder_decoder,
         )
 
-        if not self.is_generative_model:
-            self.id2label = self.model.config.id2label
-        else:
-            self.label_inds = self.tokenizer.convert_tokens_to_ids(
-                list(self.tokenizer_data.label2id.values())
+        if self.pipeline_name:
+            logging.warn("Currently pipeline only supports the CPU!!")
+            self.nlp = pipeline(
+                self.pipeline_name, model=self.model, tokenizer=self.tokenizer
             )
-            self.inds2label = {
-                k: v
-                for k, v in zip(
-                    self.label_inds, list(self.tokenizer_data.label2id.keys())
+            self.candidates = list(self.tokenizer_data.label2id.keys())
+            self.candidates2id = {v: en for en, v in enumerate(self.candidates)}
+        else:
+            if not self.is_generative_model:
+                self.id2label = self.model.config.id2label
+            else:
+                self.label_inds = self.tokenizer.convert_tokens_to_ids(
+                    list(self.tokenizer_data.label2id.values())
                 )
-            }
+                self.inds2label = {
+                    k: v
+                    for k, v in zip(
+                        self.label_inds, list(self.tokenizer_data.label2id.keys())
+                    )
+                }
 
             self.inds2idx = {k: en for en, k in enumerate(sorted(self.label_inds))}
             self.idx2inds = {v: k for k, v in self.inds2idx.items()}
 
     def forward(self, inputs, labels):
-        if self.additional_model_inputs:
-            for k, v in self.additional_model_inputs.items():
-                inputs[k] = v
-
-        if not self.is_generative_model:
-            return self.model(**inputs)
+        if self.pipeline_name:
+            return self.nlp(
+                self.tokenizer.batch_decode(inputs["input_ids"].cpu()),
+                self.candidates,
+                **self.additional_model_inputs
+            )
         else:
-            return self.model.generate(**inputs)  # , **self.additional_model_inputs)
+            if self.additional_model_inputs:
+                for k, v in self.additional_model_inputs.items():
+                    inputs[k] = v
+
+            if not self.is_generative_model:
+                return self.model(**inputs)
+            else:
+                return self.model.generate(
+                    **inputs
+                )  # , **self.additional_model_inputs)
 
     def discriptive_postprocess(self, outputs, targets):
         preds = np.argmax(outputs.logits.cpu().numpy(), axis=1)
@@ -82,11 +104,25 @@ class Model(torch.nn.Module):
             "p2u": {"predictions": p2u, "labels": labels},
         }
 
+    def pipeline_postprocess(self, outputs, targets):
+        logits = [out["scores"] for out in outputs]
+
+        preds = np.argmax(logits, axis=1)
+        p2u = [self.candidates[output] for output in preds]
+
+        return {
+            "logits": torch.tensor(logits),
+            "p2u": {"predictions": p2u, "labels": targets},
+        }
+
     def prediction2uniform(self, outputs, targets):
-        if self.is_generative_model:
-            results = self.generative_postprocess(outputs, targets)
+        if self.pipeline_name:
+            results = self.pipeline_postprocess(outputs, targets)
         else:
-            results = self.discriptive_postprocess(outputs, targets)
+            if self.is_generative_model:
+                results = self.generative_postprocess(outputs, targets)
+            else:
+                results = self.discriptive_postprocess(outputs, targets)
         return results
 
     def input2uniform(self, batch):

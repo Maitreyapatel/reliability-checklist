@@ -11,3 +11,4 @@ net:
   tie_encoder_decoder: ${custom_model.tie_encoder_decoder}
   tokenizer_data: ${custom_model.tokenizer}
   additional_model_inputs: ${custom_model.additional_model_inputs}
+  pipeline_name: ${custom_model.pipeline}
