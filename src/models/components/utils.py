@@ -81,8 +81,8 @@ def get_model(
     if model == "bert2bert":
         if model_path is None:
             from transformers import (
-                BertGenerationEncoder,
                 BertGenerationDecoder,
+                BertGenerationEncoder,
                 EncoderDecoderModel,
             )
 
@@ -151,9 +151,7 @@ def get_model(
                 name = model_name.split("-")[0]
                 encoder = getattr(decoder, name)
             except Exception as e:
-                raise AttributeError(
-                    f"Can't use share model with {model_name} architecture"
-                )
+                raise AttributeError(f"Can't use share model with {model_name} architecture")
 
             res_model = EncoderDecoderModel(encoder=encoder, decoder=decoder)
             res_model.encoder.resize_token_embeddings(len(tokenizer))
@@ -179,16 +177,14 @@ def get_model(
                 if "gpt" in model_name:
                     res_model.config.pad_token_id = tokenizer.pad_token_id
             else:
-                res_model = AutoModelForSequenceClassification.from_pretrained(
-                    model_path
-                )
+                res_model = AutoModelForSequenceClassification.from_pretrained(model_path)
 
     else:
         logging.warn(f"Please pick a valid model in {model_list}")
 
     if (
         model_path is None and not "discriminative".startswith(model) and label is None
-    ):  ## only change embeddings size if its not a trained model
+    ):  # only change embeddings size if its not a trained model
         # pass
         res_model.resize_token_embeddings(len(tokenizer))
         if hasattr(res_model.config, "encoder"):

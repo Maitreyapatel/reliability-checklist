@@ -34,12 +34,6 @@ class mnli_tokenization:
     def process(self, example):
         return self.tokenizer(example["input_data"], **self.tokenizer_args)
 
-    def process_label(self, example):
-        # TODO: need to make sure that output is consistent and stored as `label` column
-        return self.tokenizer.convert_tokens_to_ids(
-            example[self.label_col],
-        )
-
 
 def process_label2id(gt_label2id, pred_label2id):
     assert len(gt_label2id) == len(pred_label2id)
@@ -108,15 +102,13 @@ class MNLIDataModule(LightningDataModule):
         if self.data_processing.columns:
             for column_name, column_prefix in self.data_processing.columns.items():
                 dataset = dataset.map(
-                    lambda example: {
-                        column_name: " ".join([column_prefix, example[column_name]])
-                    },
+                    lambda example: {column_name: " ".join([column_prefix, example[column_name]])},
                     batched=False,
                 )
 
         dataset = dataset.map(
             lambda example: {
-                "input_data": self.data_processing.seprator.join(
+                "input_data": self.data_processing.separator.join(
                     [example[col] for col in self.cols]
                 )
             },
@@ -127,7 +119,7 @@ class MNLIDataModule(LightningDataModule):
         if self.data_processing.header:
             dataset = dataset.map(
                 lambda example: {
-                    "input_data": self.data_processing.seprator.join(
+                    "input_data": self.data_processing.separator.join(
                         [self.data_processing.header] + [example["input_data"]]
                     )
                 },
@@ -137,7 +129,7 @@ class MNLIDataModule(LightningDataModule):
         if self.data_processing.footer:
             dataset = dataset.map(
                 lambda example: {
-                    "input_data": self.data_processing.seprator.join(
+                    "input_data": self.data_processing.separator.join(
                         [example["input_data"]] + [self.data_processing.footer]
                     )
                 },
@@ -157,9 +149,7 @@ class MNLIDataModule(LightningDataModule):
         logging.info("Performing tokenization...")
         old_columns = set(list(self.data_test.features.keys()))
         self.data_test = self.data_test.map(self.tokenization.process, batched=True)
-        self.label_conversion = process_label2id(
-            self.label2id, self.tokenizer_data.label2id
-        )
+        self.label_conversion = process_label2id(self.label2id, self.tokenizer_data.label2id)
         self.data_test = self.data_test.map(
             lambda batch: {"converted_label": self.label_conversion[batch["label"]]},
             batched=False,

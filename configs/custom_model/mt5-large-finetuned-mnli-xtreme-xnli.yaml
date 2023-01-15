@@ -6,7 +6,7 @@ model_path: null ## provide the path if you have custom trained model using tran
 tie_embeddings: false
 label: null
 tie_encoder_decoder: false
-pipeline:  null
+pipeline: null
 
 additional_model_inputs:
   output_scores: true
@@ -26,7 +26,7 @@ tokenizer:
 data_processing:
   header: null ## prompt header for input data?
   footer: null ## prompt header for signling output?
-  seprator: " " ## what is seperator token? leave `null` for generative models
+  separator: " " ## what is separator token? leave `null` for generative models
   columns:
     premise: "xnli: premise:"
     hypothesis: "hypothesis:"
