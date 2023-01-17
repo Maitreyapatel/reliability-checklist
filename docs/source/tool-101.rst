@@ -8,7 +8,7 @@ This section walks through an example of how to do reliability tests on one pre-
 Run a sample reliability tests on MNLI dataset:
 -----------------------------------------------
 .. code-block:: shell
-    
+
     python src/eval.py experiment=mnli
 
 It is important to note that, we can only run the experiments on the pre-defined set of datasets that are listed inside `configs/experiments/`.

@@ -30,7 +30,7 @@ If you are a developer and interested in contributing then we highly suggests to
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-   
+
    installation
    tool-101
    byom

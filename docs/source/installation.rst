@@ -28,5 +28,5 @@ Install the requirements:
 # https://pytorch.org/get-started/
 
 .. code-block:: shell
-    
+
     pip install -r requirements.txt
