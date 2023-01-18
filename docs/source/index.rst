@@ -20,7 +20,7 @@ If you have already setup the tool, then feel free to refer following pages for 
 
    :ref:`BYoM (Bring Your own Model) <byom>`
 
-If you are a developer and interested in contributing then we highly suggests to refer following pages:
+If you are a developer and interested in contributing then we highly suggest to refer following pages:
 
    Learn about the dependencies <tbd>
 

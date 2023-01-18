@@ -23,9 +23,7 @@ Setup the anaconda environment:
 
 Install the requirements:
 -------------------------
-# install pytorch according to instructions
-
-# https://pytorch.org/get-started/
+install pytorch according to instructions: https://pytorch.org/get-started/
 
 .. code-block:: shell
 
