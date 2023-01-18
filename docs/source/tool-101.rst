@@ -11,7 +11,7 @@ Run a sample reliability tests on MNLI dataset:
 
     python src/eval.py experiment=mnli
 
-It is important to note that, we can only run the experiments on the pre-defined set of datasets that are listed inside `configs/experiments/`.
+It is important to note that, we can only run the experiments on the pre-defined set of datasets that are listed inside `configs/experiments/ <https://github.com/Maitreyapatel/reliability-score/tree/develop/configs/experiment>`.
 
 Using on different devices:
 ---------------------------
@@ -59,5 +59,5 @@ Saving the output of the reliability tests:
 Going beyond user and configuring each experiments:
 ---------------------------------------------------
 
-Please refer to the `hydra` package and `configs/` folder to understand the different parameters and features.
+Please refer to the `hydra <https://hydra.cc>`_ package and `configs/ <https://github.com/Maitreyapatel/reliability-score/tree/develop/configs>`_ folder to understand the different parameters and features.
 Once you understand them then you can modify them on cli (for example, how different devices are used in above example).

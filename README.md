@@ -1,6 +1,11 @@
 <div align="center">
 
-# reliability-score
+<h1> reliability-score 🎯 </h1>
+
+<p align="center">
+  <a href="http://149.169.30.58:8000/">[reliability-score documentation]</a>
+  <br> <br>
+</p>
 
 <a href="https://pytorch.org/get-started/locally/"><img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-ee4c2c?logo=pytorch&logoColor=white"></a>
 <a href="https://pytorchlightning.ai/"><img alt="Lightning" src="https://img.shields.io/badge/-Lightning-792ee5?logo=pytorchlightning&logoColor=white"></a>
@@ -11,7 +16,7 @@
 
 ## Description
 
-What it does
+A tool for performing the reliability tests on NLP models.
 
 ## How to run
 
@@ -23,8 +28,8 @@ git clone git@github.com:Maitreyapatel/reliability-score.git
 cd reliability-score
 
 # [OPTIONAL] create conda environment
-conda create -n myenv python=3.8
-conda activate myenv
+conda create -n venv python=3.8
+conda activate venv
 
 # install pytorch according to instructions
 # https://pytorch.org/get-started/
@@ -37,7 +42,7 @@ Evaluate example model/data with default configuration
 
 ```bash
 # train on CPU
-python src/eval.py trainer=cpu
+python src/eval.py
 
 # train on GPU
 python src/eval.py trainer=gpu
@@ -46,15 +51,19 @@ python src/eval.py trainer=gpu
 Evaluate model with chosen dataset-specific experiment configuration from [configs/experiment/](configs/experiment/)
 
 ```bash
-python src/eval.py experiment=experiment_name.yaml
+python src/eval.py experiment=<experiment_name>
 ```
 
 Specify the custom model_name as shown in following MNLI example
 
 ```bash
 # if model_name is used for tokenizer as well.
-python src/eval.py experiment=mnli custom_model.model_name="ishan/bert-base-uncased-mnli"
+python src/eval.py experiment=mnli custom_model="bert-base-uncased-mnli"
 
 # if model_name is different for tokenizer then
-python src/eval.py experiment=mnli custom_model.model_name="ishan/bert-base-uncased-mnli" custom_model.tokenizer.model_name="ishan/bert-base-uncased-mnli"
+python src/eval.py experiment=mnli custom_model="bert-base-uncased-mnli" custom_model.tokenizer.model_name="ishan/bert-base-uncased-mnli"
 ```
+
+## Documentation:
+
+The locally hosted documentation can be found at: [LINK](http://149.169.30.58:8000/)

@@ -3,7 +3,7 @@ Installation
 ============
 
 
-Installing reliability-tool is simple and quick. It has been tested on python3.8 and ubuntu. But it should be able to work on different >python3.5 versions and any OS.
+Installing reliability-score is simple and quick. It has been tested on python3.8 and ubuntu. But it should be able to work on different >python3.5 versions and any OS.
 
 
 Clone the project:
@@ -23,9 +23,7 @@ Setup the anaconda environment:
 
 Install the requirements:
 -------------------------
-# install pytorch according to instructions
-
-# https://pytorch.org/get-started/
+install pytorch according to instructions: https://pytorch.org/get-started/
 
 .. code-block:: shell
 
