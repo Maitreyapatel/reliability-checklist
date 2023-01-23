@@ -1,7 +1,7 @@
-_target_: src.models.inference_module.InferenceLitModule
+_target_: reliability_score.models.inference_module.InferenceLitModule
 
 net:
-  _target_: src.models.components.huggingface_basemodel.Model
+  _target_: reliability_score.models.components.huggingface_basemodel.Model
   model_name: ${custom_model.model_name}
   model_type: ${custom_model.model_type}
   decoder_model_name: ${custom_model.decoder_model_name}

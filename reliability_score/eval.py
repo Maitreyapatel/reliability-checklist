@@ -5,7 +5,7 @@ from omegaconf import DictConfig, open_dict
 root = pyrootutils.setup_root(__file__, dotenv=True, pythonpath=True)
 
 
-@hydra.main(version_base="1.2", config_path=root / "configs", config_name="eval.yaml")
+@hydra.main(version_base="1.2", config_path="configs", config_name="eval.yaml")
 def main(cfg: DictConfig) -> None:
     if "debugme" in cfg:
         import debugpy
@@ -26,7 +26,7 @@ def main(cfg: DictConfig) -> None:
             cfg.trainer.strategy = None
             cfg.loggers = {}
 
-    from src.tasks.eval_task import evaluate
+    from reliability_score.tasks.eval_task import evaluate
 
     evaluate(cfg)
 

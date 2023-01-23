@@ -1,4 +1,4 @@
-_target_: src.datamodules.mnli_datamodule.MNLIDataModule
+_target_: reliability_score.datamodules.mnli_datamodule.MNLIDataModule
 data_dir: ${paths.data_dir}
 batch_size: 1
 num_workers: 0
