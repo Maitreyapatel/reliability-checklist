@@ -16,52 +16,50 @@
 
 ## Description
 
-A tool for performing the reliability tests on NLP models.
+A suite of reliability tests for NLP models.
 
-## How to run
+## How to install
 
-Install dependencies
+Install the package
 
 ```bash
-# clone project
-git clone git@github.com:Maitreyapatel/reliability-score.git
-cd reliability-score
-
-# [OPTIONAL] create conda environment
-conda create -n venv python=3.8
-conda activate venv
-
-# install pytorch according to instructions
-# https://pytorch.org/get-started/
-
-# install requirements
-pip install -r requirements.txt
+pip install git+https://github.com/Maitreyapatel/reliability-score
 ```
 
 Evaluate example model/data with default configuration
 
 ```bash
-# train on CPU
-python src/eval.py
+# eval on CPU
+rs
 
-# train on GPU
-python src/eval.py trainer=gpu
+# eval on GPU
+rs trainer=gpu
 ```
 
-Evaluate model with chosen dataset-specific experiment configuration from [configs/experiment/](configs/experiment/)
+Evaluate model with chosen dataset-specific experiment configuration from [reliability_score/configs/experiment/](reliability_score/configs/experiment/)
 
 ```bash
-python src/eval.py experiment=<experiment_name>
+rs experiment=<experiment_name>
 ```
 
 Specify the custom model_name as shown in following MNLI example
 
 ```bash
 # if model_name is used for tokenizer as well.
-python src/eval.py experiment=mnli custom_model="bert-base-uncased-mnli"
+rs experiment=mnli custom_model="bert-base-uncased-mnli"
 
 # if model_name is different for tokenizer then
-python src/eval.py experiment=mnli custom_model="bert-base-uncased-mnli" custom_model.tokenizer.model_name="ishan/bert-base-uncased-mnli"
+rs experiment=mnli custom_model="bert-base-uncased-mnli" custom_model.tokenizer.model_name="ishan/bert-base-uncased-mnli"
+```
+
+## add custom_model config
+```bash
+# create config folder structure similat to reliability_score/configs/
+mkdir ./configs/
+mkdir ./configs/custom_model/
+
+# run following command after creating new config file inside ./configs/custom_model/<your-config>.yaml
+rs experiment=mnli custom_model=<your-config>
 ```
 
 ## Documentation:
