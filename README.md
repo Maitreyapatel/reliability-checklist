@@ -53,8 +53,9 @@ rs experiment=mnli custom_model="bert-base-uncased-mnli" custom_model.tokenizer.
 ```
 
 ## add custom_model config
+
 ```bash
-# create config folder structure similat to reliability_score/configs/
+# create config folder structure similar to reliability_score/configs/
 mkdir ./configs/
 mkdir ./configs/custom_model/
 
