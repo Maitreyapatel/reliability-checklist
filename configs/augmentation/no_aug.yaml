@@ -1,4 +1,0 @@
-no_augmentation:
-  _target_: src.augmentation.augments.NoAug
-  _partial_: true
-  __name__: "DEFAULT"
