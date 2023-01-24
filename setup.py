@@ -1,6 +1,20 @@
 #!/usr/bin/env python
 
+import os
+
 from setuptools import find_packages, setup
+
+
+def package_files(directory):
+    paths = []
+    for (path, directories, filenames) in os.walk(directory):
+        for filename in filenames:
+            if "yaml" in filename:
+                paths.append(os.path.join("..", path, filename))
+    return paths
+
+
+extra_files = package_files("reliability_score/configs/")
 
 setup(
     name="reliability-score",
@@ -11,5 +25,7 @@ setup(
     url="https://github.com/Maitreyapatel/reliability-score",
     install_requires=["pytorch-lightning", "hydra-core"],
     packages=find_packages(),
+    package_data={"reliability_score": extra_files},
     entry_points={"console_scripts": ["rs=reliability_score.eval:main"]},
+    include_package_data=True,
 )
