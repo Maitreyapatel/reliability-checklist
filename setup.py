@@ -1,17 +1,20 @@
 #!/usr/bin/env python
 
-from setuptools import find_packages, setup
 import os
+
+from setuptools import find_packages, setup
+
 
 def package_files(directory):
     paths = []
     for (path, directories, filenames) in os.walk(directory):
         for filename in filenames:
             if "yaml" in filename:
-                paths.append(os.path.join('..', path, filename))
+                paths.append(os.path.join("..", path, filename))
     return paths
 
-extra_files = package_files('reliability_score/configs/')
+
+extra_files = package_files("reliability_score/configs/")
 
 setup(
     name="reliability-score",

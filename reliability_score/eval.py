@@ -4,9 +4,10 @@ from omegaconf import DictConfig, open_dict
 
 try:
     root = pyrootutils.setup_root(__file__, dotenv=True, pythonpath=True)
-except:
+except Exception:
     path = "./"
     root = pyrootutils.set_root(path)
+
 
 @hydra.main(version_base="1.2", config_path="configs", config_name="eval.yaml")
 def main(cfg: DictConfig) -> None:
