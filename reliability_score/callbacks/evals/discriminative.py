@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 from pytorch_lightning.callbacks import Callback
+from sklearn import metrics
 
 
 class MonitorBasedMetric(Callback):
@@ -244,5 +245,75 @@ class CalibrationMetric(MonitorBasedMetric):
         if trainer.logger:
             plt.savefig(
                 os.path.join(self.results_dir, f"calibration_{monitor}.png"),
+                bbox_inches="tight",
+            )
+
+
+class SelectivePredictionMetric(MonitorBasedMetric):
+    def __init__(self, monitor="all", name="selective_prediction", results_dir=""):
+        super().__init__(monitor, name, results_dir)
+
+    def init_logic(self) -> dict:
+        return {"y_prob_max": [], "correct": []}
+
+    def batch_logic(self, outputs, batch) -> dict:
+        result = {
+            "y_prob_max": np.amax(
+                outputs["p2u_outputs"]["logits"].softmax(dim=1).cpu().numpy(), axis=-1
+            ).tolist(),
+            "correct": (
+                np.argmax(outputs["p2u_outputs"]["logits"].cpu().numpy(), axis=1)
+                == outputs["p2u_outputs"]["p2u"]["labels"].cpu().numpy()
+            )
+            .astype(int)
+            .tolist(),
+        }
+        return result
+
+    def end_logic(self, saved) -> dict:
+
+        tuples = [
+            (probs, correct) for probs, correct, in zip(saved["y_prob_max"], saved["correct"])
+        ]
+        sorted_tuples = sorted(tuples, key=lambda x: -x[0])
+        sorted_probs = [x[0] for x in sorted_tuples]
+        sorted_em = [x[1] for x in sorted_tuples]
+        total_questions = len(sorted_em)
+        total_correct = 0
+        covered = 0
+        risks = []
+        coverages = []
+
+        for em, prob in zip(sorted_em, sorted_probs):
+            covered += 1
+            if em:
+                total_correct += 1
+            risks.append(1 - (total_correct / covered))
+            coverages.append(covered / total_questions)
+
+        auc = round(metrics.auc(coverages, risks), 4)
+
+        result = {"auc_selective_prediction": auc}
+
+        extra = {"coverage": coverages, "risk": risks}
+        return result, extra
+
+    def save_logic(self, monitor, trainer, result, extra) -> None:
+
+        plt.figure(figsize=(10, 10))
+        ax1 = plt.subplot2grid((3, 1), (0, 0), rowspan=2)
+
+        ax1.plot(extra["coverage"], extra["risk"], label="$dataset_name")
+
+        ax1.set_xlabel("Coverage")
+        ax1.set_ylabel("Risk")
+        ax1.legend(loc="lower right")
+        ax1.set_title("Selective Prediction Plot")
+
+        plt.tight_layout()
+
+        if trainer.logger:
+            plt.savefig(
+                os.path.join(self.results_dir, f"selective_prediction_{monitor}.png"),
                 bbox_inches="tight",
             )

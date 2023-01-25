@@ -9,6 +9,7 @@ numpy==1.19.5
 transformers==4.24.0
 matplotlib==3.6.2
 sentencepiece==0.1.97
+scikit_learn==1.2.1
 
 # --------- hydra --------- #
 hydra-core==1.2.0
