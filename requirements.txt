@@ -9,6 +9,9 @@ numpy==1.19.5
 transformers==4.24.0
 matplotlib==3.6.2
 sentencepiece==0.1.97
+nltk==3.8.1
+spacy==3.5.0
+git+https://github.com/pattern3/pattern.git
 
 # --------- hydra --------- #
 hydra-core==1.2.0
