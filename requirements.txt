@@ -26,7 +26,7 @@ hydra-optuna-sweeper==1.2.0
 
 # --------- others --------- #
 pyrootutils     # standardizing the project root setup
-pre-commit      # hooks for applying linters on commit
+pre-commit==2.21.0      # hooks for applying linters on commit
 rich            # beautiful text formatting in terminal
 pytest          # tests
 sh              # for running bash commands in some tests
