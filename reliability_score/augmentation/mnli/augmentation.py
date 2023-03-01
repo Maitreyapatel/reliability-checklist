@@ -1,11 +1,11 @@
-import nltk
-import spacy
-from pattern3 import en
-
-from tqdm import tqdm
-import pandas as pd
 from copy import deepcopy
-from datasets import Dataset, concatenate_datasets, ClassLabel
+
+import nltk
+import pandas as pd
+import spacy
+from datasets import ClassLabel, Dataset, concatenate_datasets
+from pattern import en
+from tqdm import tqdm
 
 
 def lower_first(s):
@@ -92,7 +92,7 @@ class nli_augmentations:
                     passivizer = "is"
                 vbn = en.conjugate(head, "ppart")
 
-        return "%s %s by" % (passivizer, vbn)
+        return f"{passivizer} {vbn} by"
 
     def infer(self, dataset, n_workers="max"):
         datacols = list(dataset.features.keys())
@@ -102,10 +102,7 @@ class nli_augmentations:
         w_pass_trsf = {k: [] for k in datacols}
 
         for i in tqdm(range(len(dataset))):
-            try:
-                tree = nltk.tree.Tree.fromstring(dataset["hypothesis_parse"][i])
-            except:
-                continue
+            tree = nltk.tree.Tree.fromstring(dataset["hypothesis_parse"][i])
             ss = [x for x in tree.subtrees() if x.label() == "S"]
 
             for s in ss[:1]:
@@ -133,11 +130,15 @@ class nli_augmentations:
                 subj = " ".join(s[0].flatten())
                 arguments = tuple(x.label() for x in s[1][1:])
 
-                # TODO: reslove this try/except condition
+                # TODO: resolve this try/except condition
+                flag_except = False
                 try:
                     if arguments != ("NP",) or en.lemma(vp_head[0]) in ["be", "have"]:
                         continue
-                except:
+                except Exception:
+                    flag_except = True
+
+                if flag_except:
                     continue
 
                 direct_object = " ".join(s[1][1].flatten())
@@ -185,10 +186,7 @@ class nli_augmentations:
                 )
 
                 passive_hyp_inverted = (
-                    " ".join(
-                        [subj, self.passivize_vp(s[k], subject_number), direct_object]
-                    )
-                    + "."
+                    " ".join([subj, self.passivize_vp(s[k], subject_number), direct_object]) + "."
                 )
 
                 if dataset["label"][i] == 0:  # entailed
@@ -235,4 +233,6 @@ class nli_augmentations:
                 Dataset.from_pandas(pd.DataFrame(w_pass_orig)),
                 Dataset.from_pandas(pd.DataFrame(w_pass_trsf)),
             ]
-        ).cast_column("label", ClassLabel(num_classes = 3,names=['entailment', 'neutral', 'contradiction']))
+        ).cast_column(
+            "label", ClassLabel(num_classes=3, names=["entailment", "neutral", "contradiction"])
+        )

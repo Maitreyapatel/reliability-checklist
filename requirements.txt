@@ -11,7 +11,7 @@ matplotlib==3.6.2
 sentencepiece==0.1.97
 nltk==3.8.1
 spacy==3.5.0
-pattern3 ## need to apply patch
+git+https://github.com/pattern3/pattern.git
 
 # --------- hydra --------- #
 hydra-core==1.2.0
