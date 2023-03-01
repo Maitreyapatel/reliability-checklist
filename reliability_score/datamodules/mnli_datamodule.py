@@ -139,7 +139,9 @@ class MNLIDataModule(LightningDataModule):
         return dataset
 
     def prepare_data(self):
-        self.data_test = load_dataset("glue", "mnli", split="validation_matched")
+        self.data_test = load_dataset("multi_nli", split="validation_matched")
+        self.data_test = self.data_test.remove_columns(["promptID", "pairID"])
+
         logging.info("Performing data augmentations...")
         self.perform_augmentations()
 
