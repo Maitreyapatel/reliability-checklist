@@ -1,0 +1,5 @@
+parrot_paraphraser:
+  _target_: reliability_score.augmentation.augments.parrot_paraphraser
+  _partial_: true
+  __name__: "parrot"
+  csv_path: "./data/parrot_mnli.csv"

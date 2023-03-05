@@ -186,44 +186,52 @@ class nli_augmentations:
                 )
 
                 passive_hyp_inverted = (
-                    " ".join([subj, self.passivize_vp(s[k], subject_number), direct_object]) + "."
+                    " ".join(
+                        [subj, self.passivize_vp(s[k], subject_number), direct_object]
+                    )
+                    + "."
                 )
 
                 if dataset["label"][i] == 0:  # entailed
                     w_inv_orig["premise"].append(dataset["premise"][i])
                     w_inv_orig["hypothesis"].append(subjobj_rev_hyp)
                     w_inv_orig["label"].append(1)
+                    w_inv_orig["mapping"].append(i)
 
                     for k in datacols:
-                        if k not in ["premise", "hypothesis", "label"]:
+                        if k not in ["premise", "hypothesis", "label", "mapping"]:
                             w_inv_orig[k].append(dataset[k][i])
 
                 w_inv_trsf["premise"].append(dataset["hypothesis"][i])
                 w_inv_trsf["hypothesis"].append(subjobj_rev_hyp)
                 w_inv_trsf["label"].append(1)
+                w_inv_trsf["mapping"].append(i)
                 for k in datacols:
-                    if k not in ["premise", "hypothesis", "label"]:
+                    if k not in ["premise", "hypothesis", "label", "mapping"]:
                         w_inv_trsf[k].append(dataset[k][i])
 
                 w_pass_orig["premise"].append(dataset["premise"][i])
                 w_pass_orig["hypothesis"].append(passive_hyp_same_meaning)
                 w_pass_orig["label"].append(dataset["label"][i])
+                w_pass_orig["mapping"].append(i)
                 for k in datacols:
-                    if k not in ["premise", "hypothesis", "label"]:
+                    if k not in ["premise", "hypothesis", "label", "mapping"]:
                         w_pass_orig[k].append(dataset[k][i])
 
                 w_pass_trsf["premise"].append(dataset["hypothesis"][i])
                 w_pass_trsf["hypothesis"].append(passive_hyp_inverted)
                 w_pass_trsf["label"].append(1)
+                w_pass_trsf["mapping"].append(i)
                 for k in datacols:
-                    if k not in ["premise", "hypothesis", "label"]:
+                    if k not in ["premise", "hypothesis", "label", "mapping"]:
                         w_pass_trsf[k].append(dataset[k][i])
 
                 w_pass_trsf["premise"].append(dataset["hypothesis"][i])
                 w_pass_trsf["hypothesis"].append(passive_hyp_same_meaning)
                 w_pass_trsf["label"].append(0)
+                w_pass_trsf["mapping"].append(i)
                 for k in datacols:
-                    if k not in ["premise", "hypothesis", "label"]:
+                    if k not in ["premise", "hypothesis", "label", "mapping"]:
                         w_pass_trsf[k].append(dataset[k][i])
 
         return concatenate_datasets(
@@ -234,5 +242,6 @@ class nli_augmentations:
                 Dataset.from_pandas(pd.DataFrame(w_pass_trsf)),
             ]
         ).cast_column(
-            "label", ClassLabel(num_classes=3, names=["entailment", "neutral", "contradiction"])
+            "label",
+            ClassLabel(num_classes=3, names=["entailment", "neutral", "contradiction"]),
         )

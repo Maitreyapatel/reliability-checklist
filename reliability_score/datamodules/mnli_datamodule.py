@@ -102,7 +102,9 @@ class MNLIDataModule(LightningDataModule):
         if self.data_processing.columns:
             for column_name, column_prefix in self.data_processing.columns.items():
                 dataset = dataset.map(
-                    lambda example: {column_name: " ".join([column_prefix, example[column_name]])},
+                    lambda example: {
+                        column_name: " ".join([column_prefix, example[column_name]])
+                    },
                     batched=False,
                 )
 
@@ -142,6 +144,9 @@ class MNLIDataModule(LightningDataModule):
         self.data_test = load_dataset("multi_nli", split="validation_matched")
         self.data_test = self.data_test.remove_columns(["promptID", "pairID"])
 
+        keys = [i for i in range(len(self.data_test))]
+        self.data_test = self.data_test.add_column("primary_key", keys)
+
         logging.info("Performing data augmentations...")
         self.perform_augmentations()
 
@@ -151,7 +156,9 @@ class MNLIDataModule(LightningDataModule):
         logging.info("Performing tokenization...")
         old_columns = set(list(self.data_test.features.keys()))
         self.data_test = self.data_test.map(self.tokenization.process, batched=True)
-        self.label_conversion = process_label2id(self.label2id, self.tokenizer_data.label2id)
+        self.label_conversion = process_label2id(
+            self.label2id, self.tokenizer_data.label2id
+        )
         self.data_test = self.data_test.map(
             lambda batch: {"converted_label": self.label_conversion[batch["label"]]},
             batched=False,
@@ -175,7 +182,8 @@ class MNLIDataModule(LightningDataModule):
 
         self.data_test.set_format(
             type="torch",
-            columns=["label", "augmentation"] + list(new_columns - old_columns),
+            columns=["label", "augmentation", "mapping", "primary_key"]
+            + list(new_columns - old_columns),
         )
         # self.data_test = self.data_test.align_labels_with_mapping(self.label2id, "label")
 

@@ -41,7 +41,9 @@ class Model(torch.nn.Module):
 
         if self.pipeline_name:
             logging.warn("Currently pipeline only supports the CPU!!")
-            self.nlp = pipeline(self.pipeline_name, model=self.model, tokenizer=self.tokenizer)
+            self.nlp = pipeline(
+                self.pipeline_name, model=self.model, tokenizer=self.tokenizer
+            )
             self.candidates = list(self.tokenizer_data.label2id.keys())
             self.candidates2id = {v: en for en, v in enumerate(self.candidates)}
         else:
@@ -53,7 +55,9 @@ class Model(torch.nn.Module):
                 )
                 self.inds2label = {
                     k: v
-                    for k, v in zip(self.label_inds, list(self.tokenizer_data.label2id.keys()))
+                    for k, v in zip(
+                        self.label_inds, list(self.tokenizer_data.label2id.keys())
+                    )
                 }
 
                 self.inds2idx = {k: en for en, k in enumerate(sorted(self.label_inds))}
@@ -74,7 +78,9 @@ class Model(torch.nn.Module):
             if not self.is_generative_model:
                 return self.model(**inputs)
             else:
-                return self.model.generate(**inputs)  # , **self.additional_model_inputs)
+                return self.model.generate(
+                    **inputs
+                )  # , **self.additional_model_inputs)
 
     def discriptive_postprocess(self, outputs, targets):
         preds = np.argmax(outputs.logits.cpu().numpy(), axis=1)
@@ -91,7 +97,9 @@ class Model(torch.nn.Module):
         preds = np.argmax(logits.cpu().numpy(), axis=1)
         p2u = [self.inds2label[self.idx2inds[output.item()]] for output in preds]
 
-        labels = torch.tensor([self.inds2idx[y] for y in targets.cpu().numpy()]).to(targets.device)
+        labels = torch.tensor([self.inds2idx[y] for y in targets.cpu().numpy()]).to(
+            targets.device
+        )
         return {
             "logits": logits,
             "p2u": {"predictions": p2u, "labels": labels},
@@ -123,7 +131,7 @@ class Model(torch.nn.Module):
         for k, v in batch.items():
             if "label" == k:
                 y[k] = v
-            elif "augmentation" == k:
+            elif k in ["mapping", "primary_key", "augmentation"]:
                 pass
             else:
                 x[k] = v
