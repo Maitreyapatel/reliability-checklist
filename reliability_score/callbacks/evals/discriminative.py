@@ -296,8 +296,11 @@ class SensitivityMetric(MonitorBasedMetric):
         return en
 
     def end_logic(self, saved) -> dict:
-        # result = {"accuracy": sum(saved["correct"]) * 100 / sum(saved["total"])}
         extra = None
+        if saved["logits"] == []:
+            logging.error("Attempted to use sensitivity metric without parrot augmentations.")
+            return {"sensitivity": -1}, extra
+
         saved["entropy"] = self.entropy(torch.stack(saved["logits"]), dim=1)
         en_max = self.entropy(torch.tensor([0.5 for i in range(len(saved["logits"][0]))]), dim=0)
 

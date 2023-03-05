@@ -178,7 +178,11 @@ class MNLIDataModule(LightningDataModule):
 
         self.data_test.set_format(
             type="torch",
-            columns=["label", "augmentation", "mapping", "primary_key"]
+            columns=[
+                k
+                for k in ["label", "augmentation", "mapping", "primary_key"]
+                if k in self.data_test.column_names
+            ]
             + list(new_columns - old_columns),
         )
         # self.data_test = self.data_test.align_labels_with_mapping(self.label2id, "label")
