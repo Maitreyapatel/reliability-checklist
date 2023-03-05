@@ -142,6 +142,9 @@ class MNLIDataModule(LightningDataModule):
         self.data_test = load_dataset("multi_nli", split="validation_matched")
         self.data_test = self.data_test.remove_columns(["promptID", "pairID"])
 
+        keys = [i for i in range(len(self.data_test))]
+        self.data_test = self.data_test.add_column("primary_key", keys)
+
         logging.info("Performing data augmentations...")
         self.perform_augmentations()
 
@@ -175,7 +178,12 @@ class MNLIDataModule(LightningDataModule):
 
         self.data_test.set_format(
             type="torch",
-            columns=["label", "augmentation"] + list(new_columns - old_columns),
+            columns=[
+                k
+                for k in ["label", "augmentation", "mapping", "primary_key"]
+                if k in self.data_test.column_names
+            ]
+            + list(new_columns - old_columns),
         )
         # self.data_test = self.data_test.align_labels_with_mapping(self.label2id, "label")
 

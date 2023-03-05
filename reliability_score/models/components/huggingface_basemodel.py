@@ -123,7 +123,7 @@ class Model(torch.nn.Module):
         for k, v in batch.items():
             if "label" == k:
                 y[k] = v
-            elif "augmentation" == k:
+            elif k in ["mapping", "primary_key", "augmentation"]:
                 pass
             else:
                 x[k] = v
