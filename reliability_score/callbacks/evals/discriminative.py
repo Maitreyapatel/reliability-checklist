@@ -85,9 +85,7 @@ class MonitorBasedMetric(Callback):
         for k, _ in grouped_data.items():
             # batch post process
             for k1, v1 in grouped_data[k][1].items():
-                if isinstance(batch[k1], torch.Tensor) and not isinstance(
-                    v1, torch.Tensor
-                ):
+                if isinstance(batch[k1], torch.Tensor) and not isinstance(v1, torch.Tensor):
                     grouped_data[k][1][k1] = torch.stack(v1)
 
             # output post process
@@ -101,9 +99,9 @@ class MonitorBasedMetric(Callback):
                         grouped_data[k][0][k1][k2] = torch.stack(v2)
                     elif isinstance(v2, dict):
                         for k3, v3 in v2.items():
-                            if isinstance(
-                                outputs[k1][k2][k3], torch.Tensor
-                            ) and not isinstance(v3, torch.Tensor):
+                            if isinstance(outputs[k1][k2][k3], torch.Tensor) and not isinstance(
+                                v3, torch.Tensor
+                            ):
                                 grouped_data[k][0][k1][k2][k3] = torch.stack(v3)
 
         return grouped_data
@@ -125,9 +123,7 @@ class MonitorBasedMetric(Callback):
             for key, val in result.items():
                 trainer.logger.experiment.log_metrics({f"{key}/{monitor}": val})
 
-    def on_test_batch_end(
-        self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx
-    ):
+    def on_test_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
         grouped_data = self.divide_data(outputs, batch)
         for k, (out, bt) in grouped_data.items():
             result = self.batch_logic(out, bt)
@@ -204,9 +200,7 @@ class CalibrationMetric(MonitorBasedMetric):
         bins = np.linspace(0.0, 1.0 + 1e-8, self.num_bins + 1)
         bin_ids = np.digitize(saved["y_prob_max"], bins) - 1
 
-        bin_sums = np.bincount(
-            bin_ids, weights=saved["y_prob_max"], minlength=len(bins)
-        )
+        bin_sums = np.bincount(bin_ids, weights=saved["y_prob_max"], minlength=len(bins))
         bin_true = np.bincount(bin_ids, weights=saved["correct"], minlength=len(bins))
         bin_total = np.bincount(bin_ids, minlength=len(bins))
 
@@ -215,8 +209,7 @@ class CalibrationMetric(MonitorBasedMetric):
         prob_pred = bin_sums[non_zero] / bin_total[non_zero]
 
         expected_calibration_error = (
-            np.sum(bin_total[non_zero] * np.abs(prob_true - prob_pred))
-            / bin_total[non_zero].sum()
+            np.sum(bin_total[non_zero] * np.abs(prob_true - prob_pred)) / bin_total[non_zero].sum()
         )
 
         overconfidence_error = np.sum(
@@ -267,9 +260,7 @@ class CalibrationMetric(MonitorBasedMetric):
 
 
 class SensitivityMetric(MonitorBasedMetric):
-    def __init__(
-        self, monitor="all", name="sensitivity", results_dir="", override="mixed"
-    ):
+    def __init__(self, monitor="all", name="sensitivity", results_dir="", override="mixed"):
         super().__init__(monitor, name, results_dir, override="mixed")
         self.default_mapping = {}
 
@@ -287,9 +278,7 @@ class SensitivityMetric(MonitorBasedMetric):
                     torch.argmax(outputs["p2u_outputs"]["logits"][i]).cpu().data.numpy()
                 )
                 tmp["y_true"].append(batch["label"][i].cpu().data.numpy())
-                self.default_mapping[
-                    int(batch["primary_key"][i].cpu().data.numpy())
-                ] = tmp
+                self.default_mapping[int(batch["primary_key"][i].cpu().data.numpy())] = tmp
 
             if batch["augmentation"][i] == "parrot":
                 result["map"].append(batch["mapping"][i].cpu().data.numpy())
@@ -310,9 +299,7 @@ class SensitivityMetric(MonitorBasedMetric):
         # result = {"accuracy": sum(saved["correct"]) * 100 / sum(saved["total"])}
         extra = None
         saved["entropy"] = self.entropy(torch.stack(saved["logits"]), dim=1)
-        en_max = self.entropy(
-            torch.tensor([0.5 for i in range(len(saved["logits"][0]))]), dim=0
-        )
+        en_max = self.entropy(torch.tensor([0.5 for i in range(len(saved["logits"][0]))]), dim=0)
 
         overall_sensitivity = []
         sensitivity_dict = {}

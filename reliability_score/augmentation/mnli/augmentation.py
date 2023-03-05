@@ -186,10 +186,7 @@ class nli_augmentations:
                 )
 
                 passive_hyp_inverted = (
-                    " ".join(
-                        [subj, self.passivize_vp(s[k], subject_number), direct_object]
-                    )
-                    + "."
+                    " ".join([subj, self.passivize_vp(s[k], subject_number), direct_object]) + "."
                 )
 
                 if dataset["label"][i] == 0:  # entailed

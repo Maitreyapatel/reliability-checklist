@@ -1,12 +1,12 @@
-from copy import deepcopy
-from tqdm import tqdm
-from datasets import ClassLabel, Dataset
-import pandas as pd
+import logging
 import os
+from copy import deepcopy
+
+import pandas as pd
+from datasets import ClassLabel, Dataset
+from tqdm import tqdm
 
 from reliability_score.augmentation.mnli.augmentation import nli_augmentations
-
-import logging
 
 
 class Augmentation:
@@ -69,9 +69,7 @@ class parrot_paraphraser(Augmentation):
         new_dataset = {k: [] for k in datacols}
 
         for i in tqdm(range(len(dataset))):
-            newh = self.parrot.augment(
-                input_phrase=dataset["hypothesis"][i], use_gpu=True
-            )
+            newh = self.parrot.augment(input_phrase=dataset["hypothesis"][i], use_gpu=True)
             newp = self.parrot.augment(input_phrase=dataset["premise"][i], use_gpu=True)
 
             if newp and newh:
@@ -89,9 +87,7 @@ class parrot_paraphraser(Augmentation):
 
     def augment(self):
         if not os.path.exists(self.csv_path):
-            logging.warn(
-                f"Could not find the pre-defined csv data file at: {self.csv_path}"
-            )
+            logging.warn(f"Could not find the pre-defined csv data file at: {self.csv_path}")
             self.perform_augmentation(self.dataset)
 
         new_dataset = Dataset.from_pandas(pd.read_csv(self.csv_path, delimiter="\t"))
