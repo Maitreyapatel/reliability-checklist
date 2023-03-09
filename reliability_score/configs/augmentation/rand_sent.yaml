@@ -1,0 +1,4 @@
+rand_sent_augmentation:
+  _target_: reliability_score.augmentation.augments.rand_sent_aug
+  _partial_: true
+  __name__: "RAND_SENT"
