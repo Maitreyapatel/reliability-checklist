@@ -11,6 +11,7 @@ def freeze_params(params, ratio):
 def get_model(
     model="encode-decode",  # this is model_type
     model_name="bert-base-uncased",  # this is model name or it can be huggingface space path
+    huggingface_class=None,
     tokenizer=None,  # I don't think so we need this but we should return this
     decoder_model_name=None,  # Better to keep this in config
     model_path=None,  # Let's assume that everything is in huggingface
@@ -29,6 +30,9 @@ def get_model(
             from transformers import T5Tokenizer
 
             tokenizer = T5Tokenizer.from_pretrained(model_name)
+
+    if huggingface_class:
+        return huggingface_class, tokenizer
 
     model_list = [
         "encode-decode",

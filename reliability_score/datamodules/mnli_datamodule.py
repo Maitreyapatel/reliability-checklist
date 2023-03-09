@@ -189,7 +189,8 @@ class MNLIDataModule(LightningDataModule):
 
     def setup(self, stage: Optional[str] = None):
         if not self.data_test:
-            raise
+            logging.error("It seems that dataset object was not declared. Attempting it again.")
+            self.prepare_data()
 
     def train_dataloader(self):
         pass
