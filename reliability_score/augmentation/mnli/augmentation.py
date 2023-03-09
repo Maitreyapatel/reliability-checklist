@@ -95,7 +95,7 @@ class nli_augmentations:
         return f"{passivizer} {vbn} by"
 
     def infer(self, dataset, n_workers="max"):
-        datacols = list(dataset.features.keys())
+        datacols = list(dataset.features.keys()) + ["mapping"]
         w_inv_orig = {k: [] for k in datacols}
         w_inv_trsf = {k: [] for k in datacols}
         w_pass_orig = {k: [] for k in datacols}

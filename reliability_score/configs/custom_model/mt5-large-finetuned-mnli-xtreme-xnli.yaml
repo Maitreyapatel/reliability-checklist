@@ -1,6 +1,7 @@
 ## below parameters are self-explanatory
 model_name: "alan-turing-institute/mt5-large-finetuned-mnli-xtreme-xnli"
 model_type: "t5" ## you can only have following types: "encode-decode","decoder-only","bart","discriminative","shared","hybrid","t5",
+huggingface_class: null
 decoder_model_name: null
 model_path: null ## provide the path if you have custom trained model using transformers library
 tie_embeddings: false
@@ -21,6 +22,7 @@ tokenizer:
     entailment: "▁0"
   args:
     truncation: true
+    padding: "max_length"
 
 ## use following dataset pre-processing steps
 data_processing:
