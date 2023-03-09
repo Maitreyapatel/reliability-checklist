@@ -38,7 +38,6 @@ class rand_sentence_augmentation:
                 new_hypothesis = random.choice(IRRELEVANT_SENTENCES) + " " + dataset["hypothesis"][i] 
             else:
                 new_hypothesis = dataset["hypothesis"][i] + " " + random.choice(IRRELEVANT_SENTENCES)
-            print(new_hypothesis)
             new_dataset["hypothesis"].append(new_hypothesis)
             new_dataset["premise"].append(dataset["premise"][i])
             new_dataset["label"].append(dataset["label"][i])
