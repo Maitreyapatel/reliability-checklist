@@ -1,52 +1,24 @@
 import logging
+
+import logging
 from typing import Any, Dict, Optional, Tuple
 
 import torch
 from datasets import concatenate_datasets, load_dataset
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import ConcatDataset, DataLoader, Dataset, random_split
-from transformers import AutoTokenizer, T5Tokenizer
+
+from reliability_score.datamodules.utils import (
+    process_label2id,
+    general_tokenization,
+    conversion_process,
+)
 
 
-class mnli_tokenization:
+class GeneralDataModule(LightningDataModule):
     def __init__(
         self,
-        model_name: str,
-        model_type: str,
-        is_generative_model: bool,
-        tokenizer_args: dict,
-        data_processing: dict,
-        label2id: dict,
-        cols: list,
-        label_col: str,
-    ):
-        if model_type != "t5":
-            self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        else:
-            self.tokenizer = T5Tokenizer.from_pretrained(model_name)
-        self.is_generative_model = is_generative_model
-        self.data_processing = data_processing
-        self.tokenizer_args = tokenizer_args
-        self.label2id = label2id
-        self.label_col = label_col
-        self.cols = cols
-
-    def process(self, example):
-        return self.tokenizer(example["input_data"], **self.tokenizer_args)
-
-
-def process_label2id(gt_label2id, pred_label2id):
-    assert len(gt_label2id) == len(pred_label2id)
-
-    dataset_converion = {}
-    for i in list(gt_label2id.keys()):
-        dataset_converion[i] = pred_label2id[gt_label2id[i]]
-    return dataset_converion
-
-
-class MNLIDataModule(LightningDataModule):
-    def __init__(
-        self,
+        dataset_specific_args: dict,
         tokenizer_data: dict,
         model_type: str,
         data_dir: str = "data/",
@@ -58,8 +30,13 @@ class MNLIDataModule(LightningDataModule):
     ):
         super().__init__()
 
-        self.label2id = {0: "entailment", 1: "neutral", 2: "contradiction"}
-        self.cols = ["premise", "hypothesis"]
+        self.label2id = dataset_specific_args["label2id"]
+        self.cols = dataset_specific_args["cols"]
+        self.dataset_name = dataset_specific_args["name"]
+        self.dataset_split = dataset_specific_args["split"]
+        self.dataset_rmcols = dataset_specific_args["remove_cols"]
+        self.label_col = dataset_specific_args["label_col"]
+        self.label_conversion = dataset_specific_args["label_conversion"]
 
         self.batch_size = batch_size
         self.num_workers = num_workers
@@ -71,14 +48,14 @@ class MNLIDataModule(LightningDataModule):
         self.data_processing = data_processing
         self.is_generative_model = False if model_type == "discriminative" else True
 
-        self.tokenization = mnli_tokenization(
+        self.tokenization = general_tokenization(
             model_name=self.tokenizer_data["model_name"],
             is_generative_model=self.is_generative_model,
             tokenizer_args=self.tokenizer_data["args"],
             data_processing=self.data_processing,
             label2id=self.label2id,
             model_type=model_type,
-            label_col="label",
+            label_col=self.label_col,
             cols=self.cols,
         )
 
@@ -102,7 +79,9 @@ class MNLIDataModule(LightningDataModule):
         if self.data_processing.columns:
             for column_name, column_prefix in self.data_processing.columns.items():
                 dataset = dataset.map(
-                    lambda example: {column_name: " ".join([column_prefix, example[column_name]])},
+                    lambda example: {
+                        column_name: " ".join([column_prefix, example[column_name]])
+                    },
                     batched=False,
                 )
 
@@ -139,8 +118,19 @@ class MNLIDataModule(LightningDataModule):
         return dataset
 
     def prepare_data(self):
-        self.data_test = load_dataset("multi_nli", split="validation_matched")
-        self.data_test = self.data_test.remove_columns(["promptID", "pairID"])
+        self.data_test = load_dataset(self.dataset_name, split=self.dataset_split)
+        self.data_test = self.data_test.remove_columns(self.dataset_rmcols)
+        if self.label_col != "label":
+            self.data_test = self.data_test.rename_column(self.label_col, "label")
+        if self.label_conversion:
+            self.data_test = self.data_test.map(
+                lambda batch: {"converted_label": self.label_conversion[batch["label"]]},
+                batched=False,
+                remove_columns=["label"],
+            )
+            self.data_test = self.data_test.rename_column("converted_label", "label")
+            # cvp = conversion_process(self.label_conversion)
+            # self.data_test.map(cvp.process, batched=True)
 
         keys = [i for i in range(len(self.data_test))]
         self.data_test = self.data_test.add_column("primary_key", keys)
@@ -154,7 +144,9 @@ class MNLIDataModule(LightningDataModule):
         logging.info("Performing tokenization...")
         old_columns = set(list(self.data_test.features.keys()))
         self.data_test = self.data_test.map(self.tokenization.process, batched=True)
-        self.label_conversion = process_label2id(self.label2id, self.tokenizer_data.label2id)
+        self.label_conversion = process_label2id(
+            self.label2id, self.tokenizer_data.label2id
+        )
         self.data_test = self.data_test.map(
             lambda batch: {"converted_label": self.label_conversion[batch["label"]]},
             batched=False,
@@ -185,11 +177,12 @@ class MNLIDataModule(LightningDataModule):
             ]
             + list(new_columns - old_columns),
         )
-        # self.data_test = self.data_test.align_labels_with_mapping(self.label2id, "label")
 
     def setup(self, stage: Optional[str] = None):
         if not self.data_test:
-            logging.error("It seems that dataset object was not declared. Attempting it again.")
+            logging.error(
+                "It seems that dataset object was not declared. Attempting it again."
+            )
             self.prepare_data()
 
     def train_dataloader(self):

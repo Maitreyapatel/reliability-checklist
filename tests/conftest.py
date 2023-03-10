@@ -9,7 +9,9 @@ from omegaconf import DictConfig, open_dict
 def cfg_eval_global() -> DictConfig:
     with initialize(version_base="1.2", config_path="../reliability_score/configs"):
         cfg = compose(
-            config_name="eval.yaml", return_hydra_config=True, overrides=["experiment=example"]
+            config_name="eval.yaml",
+            return_hydra_config=True,
+            overrides=["task=example"],
         )
 
         # set defaults for all tests
