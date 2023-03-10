@@ -8,6 +8,7 @@ from tqdm import tqdm
 
 from reliability_score.augmentation.mnli.augmentation import nli_augmentations
 from reliability_score.augmentation.mnli.rand_sent import rand_sentence_augmentation
+from reliability_score.augmentation.mnli.num_word import num_word_augmentation
 
 class Augmentation:
     def __init__(self, __name__, dataset=None):
@@ -60,6 +61,15 @@ class rand_sent_aug(Augmentation):
 
     def augment(self):
         self.dataset = self.augmenter.infer(self.dataset)
+
+class num_word_aug(Augmentation):
+    def __init__(self, __name__="NUM_WORD", dataset=None):
+        super().__init__(__name__, dataset)
+        self.augmenter = num_word_augmentation()
+
+    def augment(self):
+        self.dataset = self.augmenter.infer(self.dataset)
+
 
 class parrot_paraphraser(Augmentation):
     def __init__(self, __name__="parrot", dataset=None, csv_path=None):
