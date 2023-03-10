@@ -1,6 +1,6 @@
 <div align="center">
 
-<h1> reliability-score 🎯 </h1>
+![reliability-score](extras/logo-no-background.png)
 
 <p align="center">
   <a href="http://149.169.30.58:8000/">[reliability-score documentation]</a>
@@ -33,23 +33,23 @@ Evaluate example model/data with default configuration
 rs
 
 # eval on GPU
-rs trainer=gpu
+rs trainer=gpu +trainer.gpus=[1,2,3]
 ```
 
-Evaluate model with chosen dataset-specific experiment configuration from [reliability_score/configs/experiment/](reliability_score/configs/experiment/)
+Evaluate model with chosen dataset-specific experiment configuration from [reliability_score/configs/task/](reliability_score/configs/task/)
 
 ```bash
-rs experiment=<experiment_name>
+rs tasl=<task_name>
 ```
 
 Specify the custom model_name as shown in following MNLI example
 
 ```bash
 # if model_name is used for tokenizer as well.
-rs experiment=mnli custom_model="bert-base-uncased-mnli"
+rs task=mnli custom_model="bert-base-uncased-mnli"
 
 # if model_name is different for tokenizer then
-rs experiment=mnli custom_model="bert-base-uncased-mnli" custom_model.tokenizer.model_name="ishan/bert-base-uncased-mnli"
+rs task=mnli custom_model="bert-base-uncased-mnli" custom_model.tokenizer.model_name="ishan/bert-base-uncased-mnli"
 ```
 
 ## add custom_model config
@@ -60,7 +60,7 @@ mkdir ./configs/
 mkdir ./configs/custom_model/
 
 # run following command after creating new config file inside ./configs/custom_model/<your-config>.yaml
-rs experiment=mnli custom_model=<your-config>
+rs task=mnli custom_model=<your-config>
 ```
 
 ## Documentation:
