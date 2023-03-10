@@ -17,7 +17,8 @@
 # Description
 
 `reliability-score` is a Python framework (available via `CLI`) for reliability tests of Large Language Models.
-> `reliability-score` accepts any model and dataset as input and runs the test-suit of consisting all the important metrices to guide you to decide the most reliable model for your deployments. 
+
+> `reliability-score` accepts any model and dataset as input and runs the test-suit of consisting all the important metrices to guide you to decide the most reliable model for your deployments.
 
 **Why you might want to use it:**
 
@@ -25,19 +26,21 @@
 Pre-defined templates available to easily integrate your models/datasets via commandline only.
 
 <b>✅ Bring Your own Model (BYoM)</b><br>
-Your model template is missing!? We have got you covered: Checkout [BYoM]() to create your own model specific config file.
+Your model template is missing!? We have got you covered: Checkout [BYoM](<>) to create your own model specific config file.
 
 <b>✅ Bring Your own Data (BYoD)</b><br>
-Your dataset template is missing!? Again we have got you covered: Checkout [BYoD]() to create your own dataset specific config file.
+Your dataset template is missing!? Again we have got you covered: Checkout [BYoD](<>) to create your own dataset specific config file.
 
 <b>✅ Reliability metrics</b><br>
 Currently, we support various reliability metrics specific to the classification tasks:
+
 - <b>Standard metrics:</b> Accuracy/F1/Precision/Recall
 - <b>Calibration tests:</b> Expected Calibration Error (ECE), Expected Overconfidence Error (EOE)
 - <b>Selective Prediction:</b> Selective Prediction Error (SPE), Risk-Coverage Curve (RCC)
 - <b>🌟 Proposed new metrics:</b> Sensitivity (our very own), and Stability
 
 ## **Upcoming feature releases:**
+
 - <b>Adversarial Attack:</b> Model in the loop discrete adversarial attacks to learn more about failures
 - <b>Out-of-Distribution:</b> Support to have many relevant OOD datasets
 - <b>Task Specific Augmentations:</b> Task specific augmentations to check the reliability on highly optimized test cases
@@ -95,13 +98,14 @@ rs task=mnli custom_model=<your-config>
 ```
 
 # 🤝 Contributing to `reliability-score`
+
 Any kind of positive contribution is welcome! Please help us to grow by contributing to the project.
 
 If you wish to contribute, you can work on any features/issues [listed here](https://github.com/Maitreyapatel/reliability-score/issues) or create one on your own. After adding your code, please send us a Pull Request.
 
 > Please read [`CONTRIBUTING`](CONTRIBUTING.md) for details on our [`CODE OF CONDUCT`](CODE_OF_CONDUCT.md), and the process for submitting pull requests to us.
 
----
+______________________________________________________________________
 
 <h3 align="center">
 A ⭐️ to <b>reliability-score</b> is to build the reliability of LLMs.
