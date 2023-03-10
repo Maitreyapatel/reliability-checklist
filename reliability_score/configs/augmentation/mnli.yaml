@@ -3,3 +3,4 @@ defaults:
   - inv_pass.yaml
   - parrot.yaml
   - rand_sent.yaml
+  - num_word.yaml
