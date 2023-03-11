@@ -1,23 +1,25 @@
-import random 
-from tqdm import tqdm
+import random
+
+import numpy as np
 import pandas as pd
 from datasets import ClassLabel, Dataset
-import numpy as np 
+from tqdm import tqdm
 
 
 class num_word_augmentation:
     def __init__(self):
         self.LOWER_YEAR_NUM = 1000
         self.UPPER_YEAR_NUM = 2020
+
     def infer(self, dataset, n_workers="max"):
         datacols = list(dataset.features.keys()) + ["mapping"]
         new_dataset = {k: [] for k in datacols}
         for i in tqdm(range(len(dataset))):
             premise_tokens = dataset["premise"][i].split()
             flag = False
-            count_num = 0 
+            count_num = 0
             for num, token in enumerate(premise_tokens):
-                if (token.isdigit()):
+                if token.isdigit():
                     number = int(token)
                     count_num += 1
                     if self.LOWER_YEAR_NUM <= number <= self.UPPER_YEAR_NUM:
@@ -33,11 +35,10 @@ class num_word_augmentation:
                 for k in datacols:
                     if k not in ["premise", "hypothesis", "label", "mapping"]:
                         new_dataset[k].append(dataset[k][i])
-        
+
         new_dataset = pd.DataFrame(new_dataset)
-        return Dataset.from_pandas(new_dataset).cast_column(
-            "label",
-            dataset.features['label'])
+        return Dataset.from_pandas(new_dataset).cast_column("label", dataset.features["label"])
+
 
 def get_contradictory_hypothesis(tokens, index, number):
 
@@ -50,14 +51,12 @@ def get_contradictory_hypothesis(tokens, index, number):
         while new_digit == old_digit:
             new_digit = np.random.randint(1, 9)
         new_num = str(new_digit) + number[1:]
-        new_tokens = tokens[:index] + [new_num] + tokens[index + 1:]
+        new_tokens = tokens[:index] + [new_num] + tokens[index + 1 :]
     else:
         prob2 = np.random.binomial(1, 0.5)
         if prob2 < 0.5:
-            new_tokens = tokens[:index] + \
-                ['more than', str(number)] + tokens[index + 1:]
+            new_tokens = tokens[:index] + ["more than", str(number)] + tokens[index + 1 :]
         else:
-            new_tokens = tokens[:index] + \
-                ['less than', str(number)] + tokens[index + 1:]
+            new_tokens = tokens[:index] + ["less than", str(number)] + tokens[index + 1 :]
 
-    return ' '.join(new_tokens)
+    return " ".join(new_tokens)
