@@ -4,3 +4,4 @@ defaults:
   - parrot.yaml
   - rand_sent.yaml
   - num_word.yaml
+  - swap_ant.yaml
