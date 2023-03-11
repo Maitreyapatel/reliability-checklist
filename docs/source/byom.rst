@@ -219,4 +219,3 @@ Create the following folder inside your project director:
 
     # run following command after creating new config file inside ./configs/custom_model/<your-config>.yaml
     rs task=mnli custom_model=<your-config>
-

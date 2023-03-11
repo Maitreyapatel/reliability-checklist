@@ -115,12 +115,12 @@ However, we have defined general classification processing pipeline to help you 
         split: test
         remove_cols: ["query", "user", "date"]
         label_col: "sentiment"
-        
+
 
 
 * :yaml:`label_conversion`: dict: provide the mapping to convert the labels into ordered int
     * default: keep default to :yaml:`null`
-    * Here, you can provide any number of valid conversions. We only ask you to keep this conversions to integer and start it with 0 and onl do +1 for classification tasks.
+    * Here, you can provide any number of valid conversions. We only ask you to keep this conversions to integer and start it with 0 and only do +1 for classification tasks.
 * :yaml:`label2id`: dict: After processing labels, let's define the corresponding class to represent the evaluation results.
 * :yaml:`cols`: list: provide the list of feature columns to use them as input data
     * default: keep default to :yaml:`1`
@@ -145,4 +145,3 @@ Create the following folder inside your project director:
 
     # run following command after creating new config file inside ./configs/custom_model/<your-config>.yaml
     rs task=mnli datamodule=<your-config>
-

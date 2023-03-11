@@ -16,13 +16,13 @@ Quick solution is to add `~` before the functionality name:
 
 
 
-For example, our task is to remove `inv_augmentation` augmentation defined at `inv_pass.yaml <https://github.com/Maitreyapatel/reliability-score/blob/release-prep/reliability_score/configs/augmentation/inv_pass.yaml>`_ then 
+For example, our task is to remove `inv_augmentation` augmentation defined at `inv_pass.yaml <https://github.com/Maitreyapatel/reliability-score/blob/release-prep/reliability_score/configs/augmentation/inv_pass.yaml>`_ then
 
 .. code-block:: shell
 
     rs task=mnli ~augmentation.inv_augmentation
 
-Another example is to remove `calibration_callback` evaluation defined at `calibration.yaml <https://github.com/Maitreyapatel/reliability-score/blob/release-prep/reliability_score/configs/callbacks/calibration.yaml>`_ then 
+Another example is to remove `calibration_callback` evaluation defined at `calibration.yaml <https://github.com/Maitreyapatel/reliability-score/blob/release-prep/reliability_score/configs/callbacks/calibration.yaml>`_ then
 
 .. code-block:: shell
 
