@@ -54,10 +54,13 @@ Our easy-to-develop infrastructure allows developers to contribute any models, d
 
 # How to install
 
-Install the package
+Install the package and its dependencies
 
 ```bash
 pip install git+https://github.com/Maitreyapatel/reliability-score
+
+python -m spacy download en_core_web_sm
+python -c "import nltk;nltk.download('wordnet')"
 ```
 
 Evaluate example model/data with default configuration
