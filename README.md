@@ -47,8 +47,8 @@ Currently, we support various reliability metrics specific to the classification
 
 ## Workflow
 
-<b>✅ Want to integrate features?</b><br>
-Our easy-to-develop infrastructure allows developers to contribute any models, datasets, augmentations, and evaluation metrics seamlessly to the whole workflow.
+<b>✅ Want to integrate more features?</b><br>
+Our easy-to-develop infrastructure allows developers to contribute any models, datasets, augmentations, and evaluation metrics seamlessly to the workflow.
 
 ![workflow](extras/reliability_score_workflow.jpg)
 

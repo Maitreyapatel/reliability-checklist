@@ -9,7 +9,7 @@ Run a sample reliability tests on MNLI dataset:
 -----------------------------------------------
 .. code-block:: shell
 
-    python src/eval.py experiment=mnli
+    rs task=mnli
 
 It is important to note that, we can only run the experiments on the pre-defined set of datasets that are listed inside `configs/experiments/ <https://github.com/Maitreyapatel/reliability-score/tree/develop/configs/experiment>`.
 
@@ -18,32 +18,32 @@ Using on different devices:
 
 .. code-block:: shell
 
-    # train on CPU
-    python src/eval.py
+    # eval on CPU
+    rs
 
-    # train on 1 GPU
-    python src/eval.py trainer=gpu
+    # eval on 1 GPU
+    rs trainer=gpu
 
-    # train on 2 GPU
-    python src/eval.py trainer=gpu trainer.gpus=2
+    # eval on 2 GPU
+    rs trainer=gpu +trainer.gpus=2
 
-    # train on 2 GPU with specific ids
-    python src/eval.py trainer=gpu trainer.gpus=[1, 5]
+    # eval on 2 GPU with specific ids
+    rs trainer=gpu +trainer.gpus=[1, 5]
 
-    # train on TPU
-    python src/eval.py +trainer.tpu_cores=8
+    # eval on TPU
+    rs trainer=tpu +trainer.tpu_cores=8
 
-    # train with DDP (Distributed Data Parallel) (4 GPUs)
-    python src/eval.py trainer=ddp trainer.devices=4
+    # eval with DDP (Distributed Data Parallel) (4 GPUs)
+    rs trainer=ddp trainer.devices=4
 
-    # train with DDP (Distributed Data Parallel) (8 GPUs, 2 nodes)
-    python src/eval.py trainer=ddp trainer.devices=4 trainer.num_nodes=2
+    # eval with DDP (Distributed Data Parallel) (8 GPUs, 2 nodes)
+    rs trainer=ddp trainer.devices=4 trainer.num_nodes=2
 
     # simulate DDP on CPU processes
-    python src/eval.py trainer=ddp_sim trainer.devices=2
+    rs trainer=ddp_sim trainer.devices=2
 
     # accelerate training on mac
-    python src/eval.py trainer=mps
+    rs trainer=mps
 
 
 Saving the output of the reliability tests:
@@ -52,7 +52,7 @@ Saving the output of the reliability tests:
 
 .. code-block:: shell
 
-    python src/eval.py logger=csv
+    rs logger=csv
 
 
 
