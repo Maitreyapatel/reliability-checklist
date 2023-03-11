@@ -4,12 +4,11 @@ import pandas as pd
 from datasets import ClassLabel, Dataset
 import numpy as np 
 
-LOWER_YEAR_NUM = 1000
-UPPER_YEAR_NUM = 2020
 
 class num_word_augmentation:
     def __init__(self):
-        pass
+        self.LOWER_YEAR_NUM = 1000
+        self.UPPER_YEAR_NUM = 2020
     def infer(self, dataset, n_workers="max"):
         datacols = list(dataset.features.keys()) + ["mapping"]
         new_dataset = {k: [] for k in datacols}
@@ -21,7 +20,7 @@ class num_word_augmentation:
                 if (token.isdigit()):
                     number = int(token)
                     count_num += 1
-                    if LOWER_YEAR_NUM <= number <= UPPER_YEAR_NUM:
+                    if self.LOWER_YEAR_NUM <= number <= self.UPPER_YEAR_NUM:
                         continue
                     cont_hyp = get_contradictory_hypothesis(premise_tokens, num, number)
                     flag = True
@@ -38,8 +37,7 @@ class num_word_augmentation:
         new_dataset = pd.DataFrame(new_dataset)
         return Dataset.from_pandas(new_dataset).cast_column(
             "label",
-            ClassLabel(num_classes=3, names=["entailment", "neutral", "contradiction"]),
-        )
+            dataset.features['label'])
 
 def get_contradictory_hypothesis(tokens, index, number):
 

@@ -43,5 +43,4 @@ class swap_ant_augmentation:
         new_dataset = pd.DataFrame(new_dataset)
         return Dataset.from_pandas(new_dataset).cast_column(
             "label",
-            ClassLabel(num_classes=3, names=["entailment", "neutral", "contradiction"]),
-        )
+            dataset.features['label'])
