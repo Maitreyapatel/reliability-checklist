@@ -1,0 +1,4 @@
+swap_ant_augmentation:
+  _target_: reliability_score.augmentation.augments.swap_ant_aug
+  _partial_: true
+  __name__: "SWAP_ANT"

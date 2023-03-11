@@ -1,0 +1,4 @@
+num_word_augmentation:
+  _target_: reliability_score.augmentation.augments.num_word_aug
+  _partial_: true
+  __name__: "NUM_WORD"
