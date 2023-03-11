@@ -13,6 +13,7 @@ class Model(torch.nn.Module):
         self,
         model_name: str,
         model_type: str,
+        huggingface_class,
         additional_model_inputs: dict,
         decoder_model_name: str,
         model_path: str,
@@ -21,6 +22,8 @@ class Model(torch.nn.Module):
         tie_encoder_decoder: bool,
         tokenizer_data: dict,
         pipeline_name: str,
+        accelerator: str,
+        devices: int,
     ):
         super().__init__()
         self.is_generative_model = False if model_type == "discriminative" else True
@@ -31,6 +34,7 @@ class Model(torch.nn.Module):
         self.model, self.tokenizer = get_model(
             model=model_type,
             model_name=model_name,
+            huggingface_class=huggingface_class,
             tokenizer=None,
             decoder_model_name=decoder_model_name,
             model_path=model_path,
@@ -40,8 +44,23 @@ class Model(torch.nn.Module):
         )
 
         if self.pipeline_name:
-            logging.warn("Currently pipeline only supports the CPU!!")
-            self.nlp = pipeline(self.pipeline_name, model=self.model, tokenizer=self.tokenizer)
+            logging.warn("Currently pipeline only supports the CPU and GPU!!")
+            if accelerator == "cpu":
+                device = "cpu"
+            elif accelerator == "gpu":
+                if isinstance(devices, list):
+                    device = devices[0]
+                else:
+                    device = 0
+            else:
+                logging.error(f"Huggingface pipelines do not support {accelerator}")
+                device = "cpu"
+            self.nlp = pipeline(
+                self.pipeline_name,
+                model=self.model,
+                tokenizer=self.tokenizer,
+                device=device,
+            )
             self.candidates = list(self.tokenizer_data.label2id.keys())
             self.candidates2id = {v: en for en, v in enumerate(self.candidates)}
         else:
@@ -64,7 +83,7 @@ class Model(torch.nn.Module):
             return self.nlp(
                 self.tokenizer.batch_decode(inputs["input_ids"].cpu()),
                 self.candidates,
-                **self.additional_model_inputs
+                **self.additional_model_inputs,
             )
         else:
             if self.additional_model_inputs:

@@ -1,6 +1,7 @@
 ## below parameters are self-explanatory
-model_name: "navteca/bart-large-mnli"
+model_name: "facebook/bart-large-mnli"
 model_type: "discriminative" ## you can only have following types: "encode-decode","decoder-only","bart","discriminative","shared","hybrid","t5",
+huggingface_class: null
 decoder_model_name: null
 model_path: null ## provide the path if you have custom trained model using transformers library
 tie_embeddings: false
@@ -19,6 +20,7 @@ tokenizer:
     entailment: 2
   args:
     truncation: true
+    padding: "max_length"
 
 ## use following dataset pre-processing steps
 data_processing:
@@ -26,5 +28,5 @@ data_processing:
   footer: null ## prompt header for signling output?
   separator: " " ## what is separator token? leave `null` for generative models
   columns:
-    premise: "xnli: premise:"
-    hypothesis: "hypothesis:"
+    premise: "premise: "
+    hypothesis: "hypothesis: "

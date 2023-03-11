@@ -13,7 +13,7 @@ defaults:
   - hydra: default.yaml
   - custom_model: bert_base_uncased.yaml
 
-  - experiment: null
+  - task: null
 
 task_name: "eval"
 

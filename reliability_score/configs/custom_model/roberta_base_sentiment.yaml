@@ -1,5 +1,5 @@
 ## below parameters are self-explanatory
-model_name: "ishan/bert-base-uncased-mnli"
+model_name: "cardiffnlp/twitter-xlm-roberta-base-sentiment"
 model_type: "discriminative" ## you can only have following types: "encode-decode","decoder-only","bart","discriminative","shared","hybrid","t5",
 huggingface_class: null
 decoder_model_name: null
@@ -14,9 +14,9 @@ additional_model_inputs: null ## specify the additional pre-defined input to mod
 tokenizer:
   model_name: ${..model_name} ## only specify the name from huggingface if it's different than the actual  model
   label2id: ## this will vary based on the evaluation data, please refer to the your selected dataset config
-    contradiction: 1
-    neutral: 0
-    entailment: 2
+    negative: 0
+    neutral: 1
+    positive: 2
   args:
     truncation: true
     padding: "max_length"

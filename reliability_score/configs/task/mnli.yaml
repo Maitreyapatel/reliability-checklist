@@ -7,7 +7,7 @@ defaults:
   - override /augmentation: mnli.yaml
   - override /datamodule: mnli.yaml
   - override /model: inference.yaml
-  - override /callbacks: mnli.yaml
+  - override /callbacks: general_evals.yaml
   - override /trainer: default.yaml
   - override /custom_model: bert_base_uncased.yaml
   - override /logger: csv.yaml

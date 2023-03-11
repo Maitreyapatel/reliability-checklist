@@ -80,9 +80,17 @@ class swap_ant_aug(Augmentation):
 
 
 class parrot_paraphraser(Augmentation):
-    def __init__(self, __name__="parrot", dataset=None, csv_path=None):
+    def __init__(
+        self,
+        __name__="parrot",
+        dataset=None,
+        dataset_name="none",
+        csv_path=None,
+        cols=None,
+    ):
         super().__init__(__name__, dataset)
-        self.csv_path = csv_path
+        self.csv_path = csv_path.format(dataset_name)
+        self.cols = cols
 
         from parrot import Parrot
 
@@ -94,17 +102,25 @@ class parrot_paraphraser(Augmentation):
         new_dataset = {k: [] for k in datacols}
 
         for i in tqdm(range(len(dataset))):
-            newh = self.parrot.augment(input_phrase=dataset["hypothesis"][i], use_gpu=True)
-            newp = self.parrot.augment(input_phrase=dataset["premise"][i], use_gpu=True)
+            tmp_data = {}
+            tmp_flag = True
+            tmp_min = 10  # fixed maximum parrot augmentations
+            for col in self.cols:
+                tmp_ = self.parrot.augment(input_phrase=dataset[col][i], use_gpu=True)
+                tmp_data[col] = tmp_
+                if not tmp_:
+                    tmp_flag = False
+                else:
+                    tmp_min = min(tmp_min, len(tmp_))
 
-            if newp and newh:
-                for j in range(min(len(newh), len(newp))):
-                    new_dataset["premise"].append(newp[j][0])
-                    new_dataset["hypothesis"].append(newh[j][0])
+            if tmp_flag:
+                for j in range(tmp_min):
+                    for col in self.cols:
+                        new_dataset[col].append(tmp_data[col][0])
                     new_dataset["label"].append(dataset["label"][i])
                     new_dataset["mapping"].append(i)
                     for k in datacols:
-                        if k not in ["premise", "hypothesis", "label", "mapping"]:
+                        if k not in ["label", "mapping"] + self.cols:
                             new_dataset[k].append(dataset[k][i])
 
         new_dataset = pd.DataFrame(new_dataset)
@@ -118,5 +134,5 @@ class parrot_paraphraser(Augmentation):
         new_dataset = Dataset.from_pandas(pd.read_csv(self.csv_path, delimiter="\t"))
         self.dataset = new_dataset.cast_column(
             "label",
-            ClassLabel(num_classes=3, names=["entailment", "neutral", "contradiction"]),
+            self.dataset.features["label"],
         )

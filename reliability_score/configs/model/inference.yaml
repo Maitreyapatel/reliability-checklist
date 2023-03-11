@@ -4,6 +4,7 @@ net:
   _target_: reliability_score.models.components.huggingface_basemodel.Model
   model_name: ${custom_model.model_name}
   model_type: ${custom_model.model_type}
+  huggingface_class: ${custom_model.huggingface_class}
   decoder_model_name: ${custom_model.decoder_model_name}
   model_path: ${custom_model.model_path}
   tie_embeddings: ${custom_model.tie_embeddings}
@@ -12,3 +13,5 @@ net:
   tokenizer_data: ${custom_model.tokenizer}
   additional_model_inputs: ${custom_model.additional_model_inputs}
   pipeline_name: ${custom_model.pipeline}
+  accelerator: ${trainer.accelerator}
+  devices: ${trainer.devices}
