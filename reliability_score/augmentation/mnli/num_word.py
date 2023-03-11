@@ -29,7 +29,7 @@ class num_word_augmentation:
             if flag and count_num == 1:
                 new_dataset["hypothesis"].append(dataset["premise"][i])
                 new_dataset["premise"].append(cont_hyp)
-                new_dataset["label"].append('contradiction')
+                new_dataset["label"].append(2)
                 new_dataset["mapping"].append(i)
                 for k in datacols:
                     if k not in ["premise", "hypothesis", "label", "mapping"]:
