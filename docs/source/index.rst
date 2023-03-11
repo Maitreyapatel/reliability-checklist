@@ -16,18 +16,13 @@ If you are new to the reliability-score, please use following links for installa
 
    :ref:`reliability-score 101 <tool101>`
 
+   :ref:`reliability-score 201 <tool201>`
+
 If you have already setup the tool, then feel free to refer following pages for BYoM (Bring Your own Model) based evaluations:
 
    :ref:`BYoM (Bring Your own Model) <byom>`
 
-If you are a developer and interested in contributing then we highly suggest to refer following pages:
-
-   Learn about the dependencies <tbd>
-
-   Learn the infrastructure <tbd>
-
-   Start contributing <tbd>
-
+   :ref:`BYoD (Bring Your own Data) <byod>`
 
 .. toctree::
    :maxdepth: 2
@@ -35,7 +30,9 @@ If you are a developer and interested in contributing then we highly suggest to 
 
    installation
    tool-101
+   tool-201
    byom
+   byod
 
 
 

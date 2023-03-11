@@ -1,9 +1,9 @@
 <div align="center">
 
-<h1> reliability-score 🎯 </h1>
+<img src="extras/logo-no-background.png" width="50%">
 
 <p align="center">
-  <a href="http://149.169.30.58:8000/">[reliability-score documentation]</a>
+  <a href="#">[documentation]</a>
   <br> <br>
 </p>
 
@@ -14,16 +14,53 @@
 
 </div>
 
-## Description
+# Description
 
-A suite of reliability tests for NLP models.
+`reliability-score` is a Python framework (available via `CLI`) for reliability tests of Large Language Models.
 
-## How to install
+> `reliability-score` accepts any model and dataset as input and runs the test-suit of consisting all the important metrices to guide you to decide the most reliable model for your deployments.
 
-Install the package
+**Why you might want to use it:**
+
+<b>✅ No coding needed</b><br>
+Pre-defined templates available to easily integrate your models/datasets via commandline only.
+
+<b>✅ Bring Your own Model (BYoM)</b><br>
+Your model template is missing!? We have got you covered: Checkout [BYoM](<>) to create your own model specific config file.
+
+<b>✅ Bring Your own Data (BYoD)</b><br>
+Your dataset template is missing!? Again we have got you covered: Checkout [BYoD](<>) to create your own dataset specific config file.
+
+<b>✅ Reliability metrics</b><br>
+Currently, we support various reliability metrics specific to the classification tasks:
+
+- <b>Standard metrics:</b> Accuracy/F1/Precision/Recall
+- <b>Calibration tests:</b> Expected Calibration Error (ECE), Expected Overconfidence Error (EOE)
+- <b>Selective Prediction:</b> Selective Prediction Error (SPE), Risk-Coverage Curve (RCC)
+- <b>🌟 Proposed new metrics:</b> Sensitivity (our very own), and Stability
+
+## **Upcoming feature releases:**
+
+- <b>Adversarial Attack:</b> Model in the loop discrete adversarial attacks to learn more about failures
+- <b>Out-of-Distribution:</b> Support to have many relevant OOD datasets
+- <b>Task Specific Augmentations:</b> Task specific augmentations to check the reliability on highly optimized test cases
+
+## Workflow
+
+<b>✅ Want to integrate more features?</b><br>
+Our easy-to-develop infrastructure allows developers to contribute any models, datasets, augmentations, and evaluation metrics seamlessly to the workflow.
+
+![workflow](extras/reliability_score_workflow.jpg)
+
+# How to install
+
+Install the package and its dependencies
 
 ```bash
 pip install git+https://github.com/Maitreyapatel/reliability-score
+
+python -m spacy download en_core_web_sm
+python -c "import nltk;nltk.download('wordnet')"
 ```
 
 Evaluate example model/data with default configuration
@@ -33,26 +70,26 @@ Evaluate example model/data with default configuration
 rs
 
 # eval on GPU
-rs trainer=gpu
+rs trainer=gpu +trainer.gpus=[1,2,3]
 ```
 
-Evaluate model with chosen dataset-specific experiment configuration from [reliability_score/configs/experiment/](reliability_score/configs/experiment/)
+Evaluate model with chosen dataset-specific experiment configuration from [reliability_score/configs/task/](reliability_score/configs/task/)
 
 ```bash
-rs experiment=<experiment_name>
+rs tasl=<task_name>
 ```
 
 Specify the custom model_name as shown in following MNLI example
 
 ```bash
 # if model_name is used for tokenizer as well.
-rs experiment=mnli custom_model="bert-base-uncased-mnli"
+rs task=mnli custom_model="bert-base-uncased-mnli"
 
 # if model_name is different for tokenizer then
-rs experiment=mnli custom_model="bert-base-uncased-mnli" custom_model.tokenizer.model_name="ishan/bert-base-uncased-mnli"
+rs task=mnli custom_model="bert-base-uncased-mnli" custom_model.tokenizer.model_name="ishan/bert-base-uncased-mnli"
 ```
 
-## add custom_model config
+## Add custom_model config
 
 ```bash
 # create config folder structure similar to reliability_score/configs/
@@ -60,9 +97,19 @@ mkdir ./configs/
 mkdir ./configs/custom_model/
 
 # run following command after creating new config file inside ./configs/custom_model/<your-config>.yaml
-rs experiment=mnli custom_model=<your-config>
+rs task=mnli custom_model=<your-config>
 ```
 
-## Documentation:
+# 🤝 Contributing to `reliability-score`
 
-The locally hosted documentation can be found at: [LINK](http://149.169.30.58:8000/)
+Any kind of positive contribution is welcome! Please help us to grow by contributing to the project.
+
+If you wish to contribute, you can work on any features/issues [listed here](https://github.com/Maitreyapatel/reliability-score/issues) or create one on your own. After adding your code, please send us a Pull Request.
+
+> Please read [`CONTRIBUTING`](CONTRIBUTING.md) for details on our [`CODE OF CONDUCT`](CODE_OF_CONDUCT.md), and the process for submitting pull requests to us.
+
+______________________________________________________________________
+
+<h1 align="center">
+A ⭐️ to <b>reliability-score</b> is to build the reliability of LLMs.
+</h1>
