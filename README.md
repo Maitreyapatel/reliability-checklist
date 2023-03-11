@@ -1,9 +1,9 @@
 <div align="center">
 
-![reliability-score](extras/logo-no-background.png)
+<img src="extras/logo-no-background.png" width="50%">
 
 <p align="center">
-  <a href="http://149.169.30.58:8000/">[reliability-score documentation]</a>
+  <a href="#">[documentation]</a>
   <br> <br>
 </p>
 
@@ -50,7 +50,7 @@ Currently, we support various reliability metrics specific to the classification
 <b>✅ Want to integrate features?</b><br>
 Our easy-to-develop infrastructure allows developers to contribute any models, datasets, augmentations, and evaluation metrics seamlessly to the whole workflow.
 
-WORKFLOW-IMAGE
+![workflow](extras/reliability_score_workflow.jpg)
 
 # How to install
 
@@ -107,6 +107,6 @@ If you wish to contribute, you can work on any features/issues [listed here](htt
 
 ______________________________________________________________________
 
-<h3 align="center">
+<h1 align="center">
 A ⭐️ to <b>reliability-score</b> is to build the reliability of LLMs.
-</h3>
+</h1>
