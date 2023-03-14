@@ -14,13 +14,20 @@
 
 </div>
 
-# Description
 
-`reliability-score` is a Python framework (available via `CLI`) for reliability tests of Large Language Models.
+[name] is an easy-to-use Python Framework for Comprehensive Evaluation of Natural Language Processing Systems on a variety of “**Reliability**” related aspects such as **_accuracy_**, **_selective prediction_**, **_novelty detection_**, **_stability_**, **_sensitivity_**, **_calibration_**, **_adversarial robustness_**, and **_out-of-distribution_**.
 
-> `reliability-score` accepts any model and dataset as input and runs the test-suit of consisting all the important metrices to guide you to decide the most reliable model for your deployments.
+> We are working on incorporating functionalities that can **IMPROVE** the 'reliability' of a given system.
+> 
+<!-- > Our framework measures performance of a given system on a comprehensive set of reliability related aspects  -->
 
-**Why you might want to use it:**
+
+<!-- > For improving the reliability, we are working on incorporating the training functionalities in our framework -->
+
+<!-- > `reliability-score` accepts any model and dataset as input and runs the test-suit of consisting all the important metrices to guide you to decide the most reliable model for your deployments. -->
+
+# **[WIP]Features**
+
 
 <b>✅ No coding needed</b><br>
 Pre-defined templates available to easily integrate your models/datasets via commandline only.
