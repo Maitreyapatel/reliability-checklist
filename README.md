@@ -17,7 +17,7 @@
 
 [name] is an easy-to-use Python Framework for Comprehensive Evaluation of Natural Language Processing Systems on a variety of “**Reliability**” related aspects such as **_accuracy_**, **_selective prediction_**, **_novelty detection_**, **_stability_**, **_sensitivity_**, **_calibration_**, **_adversarial robustness_**, and **_out-of-distribution_**.
 
-> We are working on incorporating functionalities that can **IMPROVE** the 'reliability' of a given system.
+> ⭐️ We are working on incorporating functionalities that can **IMPROVE** the 'reliability' of a given system.
 > 
 <!-- > Our framework measures performance of a given system on a comprehensive set of reliability related aspects  -->
 
