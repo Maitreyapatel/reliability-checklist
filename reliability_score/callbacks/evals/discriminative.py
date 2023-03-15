@@ -329,7 +329,7 @@ class SensitivityMetric(MonitorBasedMetric):
         pass
 
 class SelectivePredictionMetric(MonitorBasedMetric):
-    def __init__(self, monitor="all", name="selective_prediction", results_dir="", override="all"):
+    def __init__(self, monitor="all", name="selective_prediction", results_dir="", override=None):
         super().__init__(monitor, name, results_dir,override)
 
     def init_logic(self) -> dict:

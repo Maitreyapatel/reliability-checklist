@@ -2,4 +2,4 @@ selecitve_prediction_callback:
   _target_: reliability_score.callbacks.evals.discriminative.SelectivePredictionMetric
   monitor: "all"
   results_dir: ${paths.result_dir}
-  override: "all"
+  override: null
