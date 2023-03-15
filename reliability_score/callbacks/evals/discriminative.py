@@ -327,9 +327,10 @@ class SensitivityMetric(MonitorBasedMetric):
 
     def save_logic(self, monitor, trainer, result, extra) -> None:
         pass
+
 class SelectivePredictionMetric(MonitorBasedMetric):
-    def __init__(self, monitor="all", name="selective_prediction", results_dir=""):
-        super().__init__(monitor, name, results_dir)
+    def __init__(self, monitor="all", name="selective_prediction", results_dir="", override="all"):
+        super().__init__(monitor, name, results_dir,override)
 
     def init_logic(self) -> dict:
         return {"y_prob_max": [], "correct": []}
