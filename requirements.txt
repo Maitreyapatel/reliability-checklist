@@ -14,6 +14,7 @@ spacy==3.5.0
 protobuf==3.20.*
 git+https://github.com/pattern3/pattern.git
 git+https://github.com/PrithivirajDamodaran/Parrot_Paraphraser.git
+scikit_learn==1.2.1
 
 # --------- hydra --------- #
 hydra-core==1.2.0
