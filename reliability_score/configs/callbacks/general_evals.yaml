@@ -3,3 +3,4 @@ defaults:
   - acc.yaml
   - calibration.yaml
   - sensitivity.yaml
+  - selective_prediction.yaml
