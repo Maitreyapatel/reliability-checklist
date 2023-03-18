@@ -10,6 +10,7 @@ from reliability_score.augmentation.mnli.augmentation import nli_augmentations
 from reliability_score.augmentation.mnli.num_word import num_word_augmentation
 from reliability_score.augmentation.mnli.rand_sent import rand_sentence_augmentation
 from reliability_score.augmentation.mnli.swap_ant import swap_ant_augmentation
+from reliability_score.augmentation.sentiment_analysis.back_translate import back_translate_augmentation
 
 
 class Augmentation:
@@ -83,6 +84,13 @@ class swap_ant_aug(Augmentation):
     def augment(self):
         self.dataset = self.augmenter.infer(self.dataset)
 
+class back_translate_aug(Augmentation):
+    def __init__(self, __name__="BACK_TRANS", dataset=None, cols=None):
+        super().__init__(__name__, dataset)
+        self.augmenter = back_translate_augmentation(cols)
+
+    def augment(self):
+        self.dataset = self.augmenter.infer(self.dataset)
 
 class parrot_paraphraser(Augmentation):
     def __init__(

@@ -1,0 +1,5 @@
+back_translate:
+  _target_: reliability_score.augmentation.augments.back_translate_aug
+  _partial_: true
+  __name__: "BACK_TRANS"
+  cols: ${datamodule.dataset_specific_args.cols}

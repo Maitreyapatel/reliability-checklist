@@ -1,3 +1,4 @@
 defaults:
   - default.yaml
   - parrot.yaml
+  - back_translate.yaml
