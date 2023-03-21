@@ -16,6 +16,9 @@ class MonitorBasedMetric(Callback):
         self.monitor = monitor
         self.name = name
 
+        if not os.path.exists(self.results_dir) and "None" not in self.results_dir:
+            os.mkdir(self.results_dir)
+
         self.sanity = False
         self.storage = {}
 
@@ -122,7 +125,7 @@ class MonitorBasedMetric(Callback):
     def default_save_logic(self, monitor, trainer, result, extra) -> None:
         if trainer.logger:
             for key, val in result.items():
-                trainer.logger.experiment.log_metrics({f"{key}/{monitor}": val})
+                trainer.logger.experiment.log({f"{key}/{monitor}": val})
 
     def on_test_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
         grouped_data = self.divide_data(outputs, batch)
