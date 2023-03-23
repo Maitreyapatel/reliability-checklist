@@ -1,4 +1,5 @@
 defaults:
   - default.yaml
-  - parrot.yaml
-  - back_translate.yaml
+  # - parrot.yaml
+  # - back_translate.yaml
+  - double_denial.yaml

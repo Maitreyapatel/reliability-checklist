@@ -1,0 +1,5 @@
+double_denial:
+  _target_: reliability_score.augmentation.augments.double_denial_aug
+  _partial_: true
+  __name__: "DOUBLE_DENIAL"
+  cols: ${datamodule.dataset_specific_args.cols}
