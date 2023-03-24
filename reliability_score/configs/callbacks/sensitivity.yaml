@@ -3,3 +3,4 @@ sensitivity_callback:
   monitor: "all"
   results_dir: ${paths.result_dir}
   override: "mixed"
+  radar: false

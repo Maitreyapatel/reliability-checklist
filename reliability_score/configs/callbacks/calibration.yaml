@@ -4,3 +4,4 @@ calibration_callback:
   results_dir: ${paths.result_dir}
   num_bins: 10
   override: null
+  radar: false

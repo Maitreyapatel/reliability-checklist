@@ -10,11 +10,12 @@ from sklearn import metrics
 
 
 class MonitorBasedMetric(Callback):
-    def __init__(self, monitor, name, results_dir, override) -> None:
+    def __init__(self, monitor, name, results_dir, override, radar) -> None:
         self.results_dir = results_dir
         self.override = override
         self.monitor = monitor
         self.name = name
+        self.radar = radar
 
         if not os.path.exists(self.results_dir) and "None" not in self.results_dir:
             os.mkdir(self.results_dir)
@@ -89,7 +90,9 @@ class MonitorBasedMetric(Callback):
         for k, _ in grouped_data.items():
             # batch post process
             for k1, v1 in grouped_data[k][1].items():
-                if isinstance(batch[k1], torch.Tensor) and not isinstance(v1, torch.Tensor):
+                if isinstance(batch[k1], torch.Tensor) and not isinstance(
+                    v1, torch.Tensor
+                ):
                     grouped_data[k][1][k1] = torch.stack(v1)
 
             # output post process
@@ -103,9 +106,9 @@ class MonitorBasedMetric(Callback):
                         grouped_data[k][0][k1][k2] = torch.stack(v2)
                     elif isinstance(v2, dict):
                         for k3, v3 in v2.items():
-                            if isinstance(outputs[k1][k2][k3], torch.Tensor) and not isinstance(
-                                v3, torch.Tensor
-                            ):
+                            if isinstance(
+                                outputs[k1][k2][k3], torch.Tensor
+                            ) and not isinstance(v3, torch.Tensor):
                                 grouped_data[k][0][k1][k2][k3] = torch.stack(v3)
 
         return grouped_data
@@ -127,13 +130,67 @@ class MonitorBasedMetric(Callback):
             for key, val in result.items():
                 trainer.logger.experiment.log({f"{key}/{monitor}": val})
 
-    def on_test_batch_end(self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx):
+    def on_test_batch_end(
+        self, trainer, pl_module, outputs, batch, batch_idx, dataloader_idx
+    ):
         grouped_data = self.divide_data(outputs, batch)
         for k, (out, bt) in grouped_data.items():
             result = self.batch_logic(out, bt)
             self.store(k, result)
 
+    def create_radar(self, trainer, results):
+        metric_name = None
+        radar_set = {}
+        tmp_ = {
+            "subjects": [],
+            "model1": [],
+        }
+        for k, v in results.items():
+            if k == "all":
+                continue
+
+            assert len(v) == 1
+
+            for k1, v1 in v.items():
+                if k1 not in radar_set:
+                    radar_set[k1] = deepcopy(tmp_)
+                radar_set[k1]["subjects"].append(k)
+                radar_set[k1]["model1"].append(v1)
+                if metric_name==None:
+                    metric_name=k1
+
+        angles = np.linspace(
+            0, 2 * np.pi, len(radar_set[metric_name]["subjects"]), endpoint=False
+        )
+        angles = np.concatenate((angles, [angles[0]]))
+
+        for k, v in radar_set.items():
+            radar_set[k]["subjects"].append(radar_set[k]["subjects"][0])
+            radar_set[k]["model1"].append(radar_set[k]["model1"][0])
+
+        fig = plt.figure(figsize=(6, 6))
+        ax = fig.add_subplot(polar=True)  # basic plot
+        ax.plot(
+            angles, radar_set[metric_name]["model1"], "o--", color="g", label="model1"
+        )
+        # fill plot
+        ax.fill(angles, radar_set[metric_name]["model1"], alpha=0.25, color="g")
+        # Add labels
+        ax.set_thetagrids(angles * 180 / np.pi, radar_set[metric_name]["subjects"])
+        plt.grid(True)
+        plt.tight_layout()
+        plt.legend()
+
+        if trainer.logger:
+            plt.savefig(
+                os.path.join(self.results_dir, f"radar_{metric_name}.png"),
+                bbox_inches="tight",
+            )
+        else:
+            logging.error("Could not save the radar chart as the logger is missing.")
+
     def on_test_epoch_end(self, trainer, pl_module):
+        saved_results = {}
         for k, saved in self.storage.items():
             result, extra = self.end_logic(saved)
             logging.info(
@@ -141,13 +198,18 @@ class MonitorBasedMetric(Callback):
             )
             self.default_save_logic(k, trainer, result, extra)
             self.save_logic(k, trainer, result, extra)
+            saved_results[k] = result
 
+        if self.radar:
+            self.create_radar(trainer, saved_results)
         self.storage = {}
 
 
 class AccuracyMetric(MonitorBasedMetric):
-    def __init__(self, monitor="all", name="acc", results_dir="", override=None):
-        super().__init__(monitor, name, results_dir, override)
+    def __init__(
+        self, monitor="all", name="acc", results_dir="", override=None, radar=True
+    ):
+        super().__init__(monitor, name, results_dir, override, radar)
 
     def init_logic(self) -> dict:
         return {"total": [], "correct": []}
@@ -179,8 +241,9 @@ class CalibrationMetric(MonitorBasedMetric):
         results_dir="",
         num_bins=10,
         override=None,
+        radar=True,
     ):
-        super().__init__(monitor, name, results_dir, override)
+        super().__init__(monitor, name, results_dir, override, radar)
         self.num_bins = num_bins
 
     def init_logic(self) -> dict:
@@ -204,7 +267,9 @@ class CalibrationMetric(MonitorBasedMetric):
         bins = np.linspace(0.0, 1.0 + 1e-8, self.num_bins + 1)
         bin_ids = np.digitize(saved["y_prob_max"], bins) - 1
 
-        bin_sums = np.bincount(bin_ids, weights=saved["y_prob_max"], minlength=len(bins))
+        bin_sums = np.bincount(
+            bin_ids, weights=saved["y_prob_max"], minlength=len(bins)
+        )
         bin_true = np.bincount(bin_ids, weights=saved["correct"], minlength=len(bins))
         bin_total = np.bincount(bin_ids, minlength=len(bins))
 
@@ -213,7 +278,8 @@ class CalibrationMetric(MonitorBasedMetric):
         prob_pred = bin_sums[non_zero] / bin_total[non_zero]
 
         expected_calibration_error = (
-            np.sum(bin_total[non_zero] * np.abs(prob_true - prob_pred)) / bin_total[non_zero].sum()
+            np.sum(bin_total[non_zero] * np.abs(prob_true - prob_pred))
+            / bin_total[non_zero].sum()
         )
 
         overconfidence_error = np.sum(
@@ -264,8 +330,15 @@ class CalibrationMetric(MonitorBasedMetric):
 
 
 class SensitivityMetric(MonitorBasedMetric):
-    def __init__(self, monitor="all", name="sensitivity", results_dir="", override="mixed"):
-        super().__init__(monitor, name, results_dir, override="mixed")
+    def __init__(
+        self,
+        monitor="all",
+        name="sensitivity",
+        results_dir="",
+        override="mixed",
+        radar=True,
+    ):
+        super().__init__(monitor, name, results_dir, override, radar)
         self.default_mapping = {}
 
     def init_logic(self) -> dict:
@@ -282,7 +355,9 @@ class SensitivityMetric(MonitorBasedMetric):
                     torch.argmax(outputs["p2u_outputs"]["logits"][i]).cpu().data.numpy()
                 )
                 tmp["y_true"].append(batch["label"][i].cpu().data.numpy())
-                self.default_mapping[int(batch["primary_key"][i].cpu().data.numpy())] = tmp
+                self.default_mapping[
+                    int(batch["primary_key"][i].cpu().data.numpy())
+                ] = tmp
 
             if batch["augmentation"][i] == "parrot":
                 result["map"].append(batch["mapping"][i].cpu().data.numpy())
@@ -302,11 +377,15 @@ class SensitivityMetric(MonitorBasedMetric):
     def end_logic(self, saved) -> dict:
         extra = None
         if saved["logits"] == []:
-            logging.error("Attempted to use sensitivity metric without parrot augmentations.")
+            logging.error(
+                "Attempted to use sensitivity metric without parrot augmentations."
+            )
             return {"sensitivity": -1}, extra
 
         saved["entropy"] = self.entropy(torch.stack(saved["logits"]), dim=1)
-        en_max = self.entropy(torch.tensor([0.5 for i in range(len(saved["logits"][0]))]), dim=0)
+        en_max = self.entropy(
+            torch.tensor([0.5 for i in range(len(saved["logits"][0]))]), dim=0
+        )
 
         overall_sensitivity = []
         sensitivity_dict = {}
@@ -333,8 +412,15 @@ class SensitivityMetric(MonitorBasedMetric):
 
 
 class SelectivePredictionMetric(MonitorBasedMetric):
-    def __init__(self, monitor="all", name="selective_prediction", results_dir="", override=None):
-        super().__init__(monitor, name, results_dir, override)
+    def __init__(
+        self,
+        monitor="all",
+        name="selective_prediction",
+        results_dir="",
+        override=None,
+        radar=True,
+    ):
+        super().__init__(monitor, name, results_dir, override, radar)
 
     def init_logic(self) -> dict:
         return {"y_prob_max": [], "correct": []}
@@ -356,7 +442,8 @@ class SelectivePredictionMetric(MonitorBasedMetric):
     def end_logic(self, saved) -> dict:
 
         tuples = [
-            (probs, correct) for probs, correct, in zip(saved["y_prob_max"], saved["correct"])
+            (probs, correct)
+            for probs, correct, in zip(saved["y_prob_max"], saved["correct"])
         ]
         sorted_tuples = sorted(tuples, key=lambda x: -x[0])
         sorted_probs = [x[0] for x in sorted_tuples]
