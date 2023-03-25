@@ -3,4 +3,6 @@ selecitve_prediction_callback:
   monitor: "all"
   results_dir: ${paths.result_dir}
   override: null
-  radar: false
+  radar: true
+  max_possible: 1.0
+  inverse: true

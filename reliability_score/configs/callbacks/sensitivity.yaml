@@ -3,4 +3,6 @@ sensitivity_callback:
   monitor: "all"
   results_dir: ${paths.result_dir}
   override: "mixed"
-  radar: false
+  radar: true
+  max_possible: dynamic
+  inverse: true
