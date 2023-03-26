@@ -1,26 +1,36 @@
+import json
 import logging
 import os
 from copy import deepcopy
+from random import SystemRandom
 
+import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
+import yaml
 from pytorch_lightning.callbacks import Callback
 from sklearn import metrics
 
 
 class MonitorBasedMetric(Callback):
-    def __init__(self, monitor, name, results_dir, override) -> None:
+    def __init__(self, monitor, name, results_dir, override, radar, max_possible, inverse) -> None:
         self.results_dir = results_dir
         self.override = override
         self.monitor = monitor
         self.name = name
+        self.radar = radar
+        self.max_possible = max_possible
+        self.inverse = inverse
 
         if not os.path.exists(self.results_dir) and "None" not in self.results_dir:
             os.mkdir(self.results_dir)
 
+        self.max_val = max_possible
+        self.min_val = 0  # Always assumed to be zero. But this might change based on the metric.
         self.sanity = False
         self.storage = {}
+        self.__COLORS__ = set(list(mcolors.BASE_COLORS.keys()))
 
     def on_sanity_check_start(self, trainer, pl_module) -> None:
         self.ready = False
@@ -122,6 +132,9 @@ class MonitorBasedMetric(Callback):
     def save_logic(self, monitor, trainer, result, extra) -> None:
         raise NotImplementedError
 
+    def get_max_possible_score(self) -> None:
+        raise NotImplementedError
+
     def default_save_logic(self, monitor, trainer, result, extra) -> None:
         if trainer.logger:
             for key, val in result.items():
@@ -133,7 +146,113 @@ class MonitorBasedMetric(Callback):
             result = self.batch_logic(out, bt)
             self.store(k, result)
 
+    def get_scaled_values(self, x):
+        assert self.max_val is not None
+        if self.inverse:
+            return 100 - (100 * x / self.max_val)
+        else:
+            return 100 * x / self.max_val
+
+    def create_radar(self, trainer, results):
+        cryptogen = SystemRandom()
+
+        radar_set = {}
+        unique_metrics = set()
+        unique_splits = set()
+        tmp_ = {
+            "subjects": [],
+            "data": [],
+        }
+        for k, v in results.items():
+            if k == "all":
+                continue
+            unique_splits.add(k)
+
+            for k1, v1 in v.items():
+                if k1 not in radar_set:
+                    radar_set[k1] = {}
+                    radar_set[k1][self.radar.model_name] = deepcopy(tmp_)
+                radar_set[k1][self.radar.model_name]["subjects"].append(k)
+                radar_set[k1][self.radar.model_name]["data"].append(self.get_scaled_values(v1))
+                unique_metrics.add(k1)
+
+        # TODO: get older data
+        if self.radar.older_models:
+            logging.info("loading the previous model results")
+            for _, v in self.radar.older_models.items():
+                with open(os.path.join(v, "wandb/latest-run/files/config.yaml")) as file:
+                    tmp_model_name = yaml.safe_load(file)["model/net/model_name"]["value"]
+                with open(os.path.join(v, "wandb/latest-run/files/wandb-summary.json")) as file:
+                    wandb_data = json.load(file)
+
+                metric_spc_data_ = {}
+                tmp_data_ = {tmp_model_name: deepcopy(tmp_)}
+                for k1, v1 in wandb_data.items():
+                    k1_split = k1.split("/")
+                    if len(k1_split) != 2:  # or k1_split[0] not in unique_metrics:
+                        continue
+                    if k1_split[0] not in metric_spc_data_:
+                        metric_spc_data_[k1_split[-0]] = deepcopy(tmp_data_)
+                    if k1_split[-1] not in unique_splits:
+                        continue
+
+                    metric_spc_data_[k1_split[-0]][tmp_model_name]["subjects"].append(k1_split[-1])
+                    metric_spc_data_[k1_split[-0]][tmp_model_name]["data"].append(
+                        self.get_scaled_values(v1)
+                    )
+
+            for k, _ in radar_set.items():
+                for k1, v1 in metric_spc_data_[k].items():
+                    radar_set[k][k1] = v1
+
+        for metric_name, model_specific in radar_set.items():
+            fig = plt.figure(figsize=(6, 6))
+            ax = fig.add_subplot(polar=True)  # basic plot
+            angles = np.linspace(
+                0,
+                2 * np.pi,
+                len(model_specific[self.radar.model_name]["subjects"]),
+                endpoint=False,
+            )
+            angles = np.concatenate((angles, [angles[0]]))
+
+            for model_name, _ in model_specific.items():
+
+                model_specific[model_name]["subjects"].append(
+                    model_specific[model_name]["subjects"][0]
+                )
+                model_specific[model_name]["data"].append(model_specific[model_name]["data"][0])
+
+                sel_color = cryptogen.choice(list(self.__COLORS__))
+                self.__COLORS__.remove(sel_color)
+                ax.plot(
+                    angles,
+                    model_specific[model_name]["data"],
+                    "o--",
+                    color=sel_color,
+                    label=model_name,
+                )
+                # fill plot
+                ax.fill(angles, model_specific[model_name]["data"], alpha=0.25, color="g")
+                # Add labels
+                ax.set_thetagrids(angles * 180 / np.pi, model_specific[model_name]["subjects"])
+
+            plt.grid(True)
+            plt.tight_layout()
+            plt.legend()
+            plt.ylim(0, 100)
+            plt.title(metric_name)
+
+            if trainer.logger:
+                plt.savefig(
+                    os.path.join(self.results_dir, f"radar_{metric_name}.png"),
+                    bbox_inches="tight",
+                )
+            else:
+                logging.error("Could not save the radar chart as the logger is missing.")
+
     def on_test_epoch_end(self, trainer, pl_module):
+        saved_results = {}
         for k, saved in self.storage.items():
             result, extra = self.end_logic(saved)
             logging.info(
@@ -141,13 +260,25 @@ class MonitorBasedMetric(Callback):
             )
             self.default_save_logic(k, trainer, result, extra)
             self.save_logic(k, trainer, result, extra)
+            saved_results[k] = result
 
+        if self.radar.get_radar:
+            self.create_radar(trainer, saved_results)
         self.storage = {}
 
 
 class AccuracyMetric(MonitorBasedMetric):
-    def __init__(self, monitor="all", name="acc", results_dir="", override=None):
-        super().__init__(monitor, name, results_dir, override)
+    def __init__(
+        self,
+        monitor="all",
+        name="acc",
+        results_dir="",
+        override=None,
+        radar=True,
+        max_possible=100,
+        inverse=False,
+    ):
+        super().__init__(monitor, name, results_dir, override, radar, max_possible, inverse)
 
     def init_logic(self) -> dict:
         return {"total": [], "correct": []}
@@ -179,8 +310,11 @@ class CalibrationMetric(MonitorBasedMetric):
         results_dir="",
         num_bins=10,
         override=None,
+        radar=True,
+        max_possible=0.5,
+        inverse=False,
     ):
-        super().__init__(monitor, name, results_dir, override)
+        super().__init__(monitor, name, results_dir, override, radar, max_possible, inverse)
         self.num_bins = num_bins
 
     def init_logic(self) -> dict:
@@ -264,15 +398,29 @@ class CalibrationMetric(MonitorBasedMetric):
 
 
 class SensitivityMetric(MonitorBasedMetric):
-    def __init__(self, monitor="all", name="sensitivity", results_dir="", override="mixed"):
-        super().__init__(monitor, name, results_dir, override="mixed")
+    def __init__(
+        self,
+        monitor="all",
+        name="sensitivity",
+        results_dir="",
+        override="mixed",
+        radar=True,
+        max_possible="dynamic",
+        inverse=False,
+    ):
+        super().__init__(monitor, name, results_dir, override, radar, max_possible, inverse)
         self.default_mapping = {}
 
     def init_logic(self) -> dict:
         return {"map": [], "logits": [], "aug_pred": [], "aug_true": []}
 
+    def get_max_possible_score(self, num_classes):
+        self.max_val = self.entropy(torch.ones(num_classes) * 0.5, dim=0)
+
     def batch_logic(self, outputs, batch):
         result = self.init_logic()
+        if self.max_val is None:
+            self.get_max_possible_score(outputs["p2u_outputs"]["logits"].shape[1])
 
         for i in range(len(outputs["p2u_outputs"]["logits"])):
             if batch["augmentation"][i] == "DEFAULT":
@@ -333,8 +481,17 @@ class SensitivityMetric(MonitorBasedMetric):
 
 
 class SelectivePredictionMetric(MonitorBasedMetric):
-    def __init__(self, monitor="all", name="selective_prediction", results_dir="", override=None):
-        super().__init__(monitor, name, results_dir, override)
+    def __init__(
+        self,
+        monitor="all",
+        name="selective_prediction",
+        results_dir="",
+        override=None,
+        radar=True,
+        max_possible=1,
+        inverse=False,
+    ):
+        super().__init__(monitor, name, results_dir, override, radar, max_possible, inverse)
 
     def init_logic(self) -> dict:
         return {"y_prob_max": [], "correct": []}
