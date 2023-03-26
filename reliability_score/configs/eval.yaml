@@ -6,7 +6,7 @@ defaults:
   - callbacks: default.yaml
   - datamodule: mnli.yaml # choose datamodule with `test_dataloader()` for evaluation
   - model: inference.yaml
-  - logger: null
+  - logger: wandb.yaml
   - trainer: default.yaml
   - paths: default.yaml
   - extras: default.yaml

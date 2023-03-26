@@ -4,6 +4,6 @@ calibration_callback:
   results_dir: ${paths.result_dir}
   num_bins: 10
   override: null
-  radar: true
+  radar: ${callbacks.radar_data}
   max_possible: 0.5
   inverse: true

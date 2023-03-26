@@ -3,6 +3,6 @@ accuracy_callback:
   monitor: "all"
   results_dir: ${paths.result_dir}
   override: null
-  radar: true
+  radar: ${callbacks.radar_data}
   max_possible: 100
   inverse: false

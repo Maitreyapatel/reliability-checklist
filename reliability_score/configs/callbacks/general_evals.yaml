@@ -4,3 +4,4 @@ defaults:
   - calibration.yaml
   - sensitivity.yaml
   - selective_prediction.yaml
+  - radar.yaml
