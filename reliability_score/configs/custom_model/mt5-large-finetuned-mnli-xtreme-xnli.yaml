@@ -1,7 +1,10 @@
 ## below parameters are self-explanatory
 model_name: "alan-turing-institute/mt5-large-finetuned-mnli-xtreme-xnli"
 model_type: "t5" ## you can only have following types: "encode-decode","decoder-only","bart","discriminative","shared","hybrid","t5",
-huggingface_class: null
+huggingface_class:
+  _target_: transformers.MT5ForConditionalGeneration.from_pretrained
+  pretrained_model_name_or_path: ${..model_name}
+
 decoder_model_name: null
 model_path: null ## provide the path if you have custom trained model using transformers library
 tie_embeddings: false
@@ -17,7 +20,7 @@ additional_model_inputs:
 tokenizer:
   model_name: ${..model_name} ## only specify the name from huggingface if it's different than the actual  model
   label2id: ## this will vary based on the evaluation data, please refer to the your selected dataset config
-    contradiction: "_2"
+    contradiction: "▁2"
     neutral: "▁1"
     entailment: "▁0"
   args:

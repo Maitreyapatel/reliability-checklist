@@ -32,6 +32,7 @@ def get_model(
             tokenizer = T5Tokenizer.from_pretrained(model_name)
 
     if huggingface_class:
+        logging.info("Using given huggingface classifier class")
         return huggingface_class, tokenizer
 
     model_list = [
