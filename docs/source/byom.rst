@@ -11,44 +11,44 @@
 BYoM (Bring Your own Model)
 ===========================
 
-reliability-score allows users to bring their own pre-trained models by just configuring the single .yaml file.
-Checkout the `reliability_score/configs/custom_models/ <https://github.com/Maitreyapatel/reliability-score/tree/release-prep/reliability_score/configs/custom_model>`_.
+reliability-checklist allows users to bring their own pre-trained models by just configuring the single .yaml file.
+Checkout the `reliability_checklist/configs/custom_models/ <https://github.com/Maitreyapatel/reliability-checklist/tree/release-prep/reliability_checklist/configs/custom_model>`_.
 
-**Note:** reliability-score requires models to be created using `transformers <https://huggingface.co/docs/transformers/index>`_ library.
+**Note:** reliability-checklist requires models to be created using `transformers <https://huggingface.co/docs/transformers/index>`_ library.
 
 
-How to specify your model to reliability-score for tests?
+How to specify your model to reliability-checklist for tests?
 ---------------------------------------------------------
 
-Suppose, we created `roberta_large_mnli.yaml <https://github.com/Maitreyapatel/reliability-score/tree/release-prep/reliability_score/configs/custom_model/roberta_large_mnli.yaml>`_ file
+Suppose, we created `roberta_large_mnli.yaml <https://github.com/Maitreyapatel/reliability-checklist/tree/release-prep/reliability_checklist/configs/custom_model/roberta_large_mnli.yaml>`_ file
 and we want to use this config for reliability tests on MNLI dataset.
 To do this, we just need to specify the name of the config in cli and we are done:
 
 .. code-block:: shell
 
-    rs task=mnli custom_model=roberta_large_mnli
+    recheck task=mnli custom_model=roberta_large_mnli
 
 Pre-defined list of templates:
 ------------------------------
 
-#. `bert_base_uncased <https://github.com/Maitreyapatel/reliability-score/tree/release-prep/reliability_score/configs/custom_model/bert_base_uncased.yaml>`_
-#. `roberta_large_mnli <https://github.com/Maitreyapatel/reliability-score/tree/release-prep/reliability_score/configs/custom_model/roberta_large_mnli.yaml>`_
-#. `mt5-large-finetuned-mnli-xtreme-xnli <https://github.com/Maitreyapatel/reliability-score/tree/release-prep/reliability_score/configs/custom_model/mt5-large-finetuned-mnli-xtreme-xnli.yaml>`_
-#. `zero-shot-classification <https://github.com/Maitreyapatel/reliability-score/tree/release-prep/reliability_score/configs/custom_model/zero-shot-classification.yaml>`_
+#. `bert_base_uncased <https://github.com/Maitreyapatel/reliability-checklist/tree/release-prep/reliability_checklist/configs/custom_model/bert_base_uncased.yaml>`_
+#. `roberta_large_mnli <https://github.com/Maitreyapatel/reliability-checklist/tree/release-prep/reliability_checklist/configs/custom_model/roberta_large_mnli.yaml>`_
+#. `mt5-large-finetuned-mnli-xtreme-xnli <https://github.com/Maitreyapatel/reliability-checklist/tree/release-prep/reliability_checklist/configs/custom_model/mt5-large-finetuned-mnli-xtreme-xnli.yaml>`_
+#. `zero-shot-classification <https://github.com/Maitreyapatel/reliability-checklist/tree/release-prep/reliability_checklist/configs/custom_model/zero-shot-classification.yaml>`_
 
 
 If you have a custom trained model and if it fits with any of the above templates then you can either specify either model_name or model_path on cli as shown below:
 
 .. code-block:: shell
 
-    rs task=mnli custom_model=roberta_large_mnli custom_model.model_name=bert_base_uncased
+    recheck task=mnli custom_model=roberta_large_mnli custom_model.model_name=bert_base_uncased
 
-    rs task=mnli custom_model=roberta_large_mnli custom_model.model_name=bert_base_uncased custom_model.model_path=</path/to/your/model/>
+    recheck task=mnli custom_model=roberta_large_mnli custom_model.model_name=bert_base_uncased custom_model.model_path=</path/to/your/model/>
 
 How to create template from scratch?
 ------------------------------------
 
-reliability-score allows various configurations of models including prompt/instruction enginerring.
+reliability-checklist allows various configurations of models including prompt/instruction enginerring.
 Following example shows how the standard template looks-like:
 
 .. code-block:: yaml
@@ -143,7 +143,7 @@ Similarly, if you are using :yaml:`pipeline` then it also takes additional argum
 **tokenizer**:
 
 Tokenization can vary a lot based on the selected model or even the data.
-It is important to define the proper mapping between your trained version vs the reliability-score requirements.
+It is important to define the proper mapping between your trained version vs the reliability-checklist requirements.
 :yaml:`tokenizer` parameter contains the several reuqired parameters and again some unrestricted set of parameters:
 
 * :yaml:`model_name`: str: define the name of the tokenizer name
@@ -213,9 +213,9 @@ Create the following folder inside your project director:
 
 .. code-block:: shell
 
-    # create config folder structure similar to reliability_score/configs/
+    # create config folder structure similar to reliability_checklist/configs/
     mkdir ./configs/
     mkdir ./configs/custom_model/
 
     # run following command after creating new config file inside ./configs/custom_model/<your-config>.yaml
-    rs task=mnli custom_model=<your-config>
+    recheck task=mnli custom_model=<your-config>

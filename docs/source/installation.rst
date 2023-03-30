@@ -3,11 +3,11 @@ Installation
 ============
 
 
-Installing reliability-score is simple and quick. It has been tested on python3.8 and ubuntu. But it should be able to work on different >python3.5 versions and any OS.
+Installing reliability-checklist is simple and quick. It has been tested on python3.8 and ubuntu. But it should be able to work on different >python3.5 versions and any OS.
 
 .. code-block:: shell
 
-    pip install git+https://github.com/Maitreyapatel/reliability-score
+    pip install git+https://github.com/Maitreyapatel/reliability-checklist
 
     python -m spacy download en_core_web_sm
     python -c "import nltk;nltk.download('wordnet')"
@@ -20,8 +20,8 @@ Clone the project:
 ~~~~~~~~~~~~~~~~~~
 .. code-block:: shell
 
-    git clone git@github.com:Maitreyapatel/reliability-score.git
-    cd reliability-score
+    git clone git@github.com:Maitreyapatel/reliability-checklist.git
+    cd reliability-checklist
 
 
 Setup the anaconda environment:

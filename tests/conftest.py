@@ -7,7 +7,7 @@ from omegaconf import DictConfig, open_dict
 
 @pytest.fixture(scope="package")
 def cfg_eval_global() -> DictConfig:
-    with initialize(version_base="1.2", config_path="../reliability_score/configs"):
+    with initialize(version_base="1.2", config_path="../reliability_checklist/configs"):
         cfg = compose(
             config_name="eval.yaml",
             return_hydra_config=True,

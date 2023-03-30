@@ -1,8 +1,0 @@
-sensitivity_callback:
-  _target_: reliability_score.callbacks.evals.discriminative.SensitivityMetric
-  monitor: "all"
-  results_dir: ${paths.result_dir}
-  override: "mixed"
-  radar: ${callbacks.radar_data}
-  max_possible: dynamic
-  inverse: true

@@ -1,6 +1,6 @@
-# Contributing to reliability-score
+# Contributing to reliability-checklist
 
-Thank you for your interest in contributing to reliability-score! Here are some guidelines to follow when contributing to the project:
+Thank you for your interest in contributing to reliability-checklist! Here are some guidelines to follow when contributing to the project:
 
 ## How to Contribute
 
@@ -16,14 +16,14 @@ We follow the [coding standards](https://google.github.io/styleguide/pyguide.htm
 
 ## Reporting Issues
 
-If you encounter an issue with the project, please [submit an issue](https://github.com/Maitreyapatel/reliability-score/issues/new/choose) with a clear description of the problem, including steps to reproduce it.
+If you encounter an issue with the project, please [submit an issue](https://github.com/Maitreyapatel/reliability-checklist/issues/new/choose) with a clear description of the problem, including steps to reproduce it.
 
 ## Feature Requests
 
-If you have an idea for a new feature or enhancement to the project, please [submit a feature request](https://github.com/Maitreyapatel/reliability-score/issues/new/choose) with a clear description of the feature and why it would be beneficial to the project.
+If you have an idea for a new feature or enhancement to the project, please [submit a feature request](https://github.com/Maitreyapatel/reliability-checklist/issues/new/choose) with a clear description of the feature and why it would be beneficial to the project.
 
 ## Code of Conduct
 
 We follow the [code of conduct](CODE_OF_CONDUCT.md). Please ensure that all contributions, discussions, and interactions adhere to this code of conduct.
 
-Thank you for contributing to reliability-score!
+Thank you for contributing to reliability-checklist!

@@ -11,45 +11,45 @@
 BYoD (Bring Your own Data)
 ===========================
 
-reliability-score allows users to bring their own datasets by just configuring the single .yaml file.
-Checkout the `reliability_score/configs/datamodule/ <https://github.com/Maitreyapatel/reliability-score/tree/release-prep/reliability_score/configs/datamodule>`_.
+reliability-checklist allows users to bring their own datasets by just configuring the single .yaml file.
+Checkout the `reliability_checklist/configs/datamodule/ <https://github.com/Maitreyapatel/reliability-checklist/tree/release-prep/reliability_checklist/configs/datamodule>`_.
 
-**Note:** reliability-score requires datasets to be on `datasets <https://huggingface.co/docs/datasets/index>`_ library.
+**Note:** reliability-checklist requires datasets to be on `datasets <https://huggingface.co/docs/datasets/index>`_ library.
 
 
-How to specify your dataset to reliability-score for tests?
+How to specify your dataset to reliability-checklist for tests?
 ---------------------------------------------------------
 
-Suppose, we created `sentiment140.yaml <https://github.com/Maitreyapatel/reliability-score/blob/release-prep/reliability_score/configs/datamodule/sentiment140.yaml>`_ file
+Suppose, we created `sentiment140.yaml <https://github.com/Maitreyapatel/reliability-checklist/blob/release-prep/reliability_checklist/configs/datamodule/sentiment140.yaml>`_ file
 and we want to use this config for reliability tests on sentiment140 dataset.
 To do this, we just need to specify the name of the config in cli and we are done:
 
 .. code-block:: shell
 
-    rs task=mnli datamodule=sentiment140
+    recheck task=mnli datamodule=sentiment140
 
 Pre-defined list of templates:
 ------------------------------
 
-#. `mnli <https://github.com/Maitreyapatel/reliability-score/blob/release-prep/reliability_score/configs/datamodule/mnli.yaml>`_
-#. `sentiment140 <https://github.com/Maitreyapatel/reliability-score/blob/release-prep/reliability_score/configs/datamodule/sentiment140.yaml>`_
+#. `mnli <https://github.com/Maitreyapatel/reliability-checklist/blob/release-prep/reliability_checklist/configs/datamodule/mnli.yaml>`_
+#. `sentiment140 <https://github.com/Maitreyapatel/reliability-checklist/blob/release-prep/reliability_checklist/configs/datamodule/sentiment140.yaml>`_
 
 
 If you have a new dataset and if it fits with any of the above templates then you can either specify either model_name or model_path on cli as shown below:
 
 .. code-block:: shell
 
-    rs task=mnli datamodule=mnli datamodule.dataset_specific_args.name="LysandreJik/glue-mnli-train" datamodule.dataset_specific_args.split="validation"
+    recheck task=mnli datamodule=mnli datamodule.dataset_specific_args.name="LysandreJik/glue-mnli-train" datamodule.dataset_specific_args.split="validation"
 
 How to create template from scratch?
 ------------------------------------
 
-reliability-score allows various configurations of datasets.
+reliability-checklist allows various configurations of datasets.
 Following example shows how the standard template looks-like:
 
 .. code-block:: yaml
 
-    _target_: reliability_score.datamodules.common_datamodule.GeneralDataModule
+    _target_: reliability_checklist.datamodules.common_datamodule.GeneralDataModule
     data_dir: ${paths.data_dir}
     batch_size: 1
     num_workers: 0
@@ -139,9 +139,9 @@ Create the following folder inside your project director:
 
 .. code-block:: shell
 
-    # create config folder structure similar to reliability_score/configs/
+    # create config folder structure similar to reliability_checklist/configs/
     mkdir ./configs/
     mkdir ./configs/datamodule/
 
     # run following command after creating new config file inside ./configs/custom_model/<your-config>.yaml
-    rs task=mnli datamodule=<your-config>
+    recheck task=mnli datamodule=<your-config>

@@ -16,9 +16,9 @@
 
 # Description
 
-`reliability-score` is a Python framework (available via `CLI`) for reliability tests of Large Language Models.
+`reliability-checklist` is a Python framework (available via `CLI`) for reliability tests of Large Language Models.
 
-> `reliability-score` accepts any model and dataset as input and runs the test-suit of consisting all the important metrices to guide you to decide the most reliable model for your deployments.
+> `reliability-checklist` accepts any model and dataset as input and runs the test-suit of consisting all the important metrices to guide you to decide the most reliable model for your deployments.
 
 **Why you might want to use it:**
 
@@ -50,66 +50,66 @@ Currently, we support various reliability metrics specific to the classification
 <b>✅ Want to integrate more features?</b><br>
 Our easy-to-develop infrastructure allows developers to contribute any models, datasets, augmentations, and evaluation metrics seamlessly to the workflow.
 
-![workflow](extras/reliability_score_workflow.jpg)
+![workflow](extras/recheck_workflow.jpg)
 
-# How to install
-
-Install the package and its dependencies
+# How to install?
 
 ```bash
-pip install git+https://github.com/Maitreyapatel/reliability-score
+pip install git+https://github.com/Maitreyapatel/reliability-checklist
 
 python -m spacy download en_core_web_sm
 python -c "import nltk;nltk.download('wordnet')"
 ```
 
+# How to use?
+
 Evaluate example model/data with default configuration
 
 ```bash
 # eval on CPU
-rs
+recheck
 
 # eval on GPU
-rs trainer=gpu +trainer.gpus=[1,2,3]
+recheck trainer=gpu +trainer.gpus=[1,2,3]
 ```
 
-Evaluate model with chosen dataset-specific experiment configuration from [reliability_score/configs/task/](reliability_score/configs/task/)
+Evaluate model with chosen dataset-specific experiment configuration from [reliability_checklist/configs/task/](reliability_checklist/configs/task/)
 
 ```bash
-rs tasl=<task_name>
+recheck tasl=<task_name>
 ```
 
 Specify the custom model_name as shown in following MNLI example
 
 ```bash
 # if model_name is used for tokenizer as well.
-rs task=mnli custom_model="bert-base-uncased-mnli"
+recheck task=mnli custom_model="bert-base-uncased-mnli"
 
 # if model_name is different for tokenizer then
-rs task=mnli custom_model="bert-base-uncased-mnli" custom_model.tokenizer.model_name="ishan/bert-base-uncased-mnli"
+recheck task=mnli custom_model="bert-base-uncased-mnli" custom_model.tokenizer.model_name="ishan/bert-base-uncased-mnli"
 ```
 
 ## Add custom_model config
 
 ```bash
-# create config folder structure similar to reliability_score/configs/
+# create config folder structure similar to reliability_checklist/configs/
 mkdir ./configs/
 mkdir ./configs/custom_model/
 
 # run following command after creating new config file inside ./configs/custom_model/<your-config>.yaml
-rs task=mnli custom_model=<your-config>
+recheck task=mnli custom_model=<your-config>
 ```
 
-# 🤝 Contributing to `reliability-score`
+# 🤝 Contributing to `reliability-checklist`
 
 Any kind of positive contribution is welcome! Please help us to grow by contributing to the project.
 
-If you wish to contribute, you can work on any features/issues [listed here](https://github.com/Maitreyapatel/reliability-score/issues) or create one on your own. After adding your code, please send us a Pull Request.
+If you wish to contribute, you can work on any features/issues [listed here](https://github.com/Maitreyapatel/reliability-checklist/issues) or create one on your own. After adding your code, please send us a Pull Request.
 
 > Please read [`CONTRIBUTING`](CONTRIBUTING.md) for details on our [`CODE OF CONDUCT`](CODE_OF_CONDUCT.md), and the process for submitting pull requests to us.
 
 ______________________________________________________________________
 
 <h1 align="center">
-A ⭐️ to <b>reliability-score</b> is to build the reliability of LLMs.
+A ⭐️ to <b>reliability-checklist</b> is to build the reliability of LLMs.
 </h1>
