@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "reliability-score"
+project = "reliability-checklist"
 copyright = "2023, Maitreya Patel"
 author = "Maitreya Patel"
 

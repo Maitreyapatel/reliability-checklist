@@ -1,4 +1,0 @@
-inv_augmentation:
-  _target_: reliability_score.augmentation.augments.simple_aug
-  _partial_: true
-  __name__: "INV_PASS"

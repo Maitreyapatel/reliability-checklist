@@ -1,8 +1,0 @@
-selecitve_prediction_callback:
-  _target_: reliability_score.callbacks.evals.discriminative.SelectivePredictionMetric
-  monitor: "all"
-  results_dir: ${paths.result_dir}
-  override: null
-  radar: ${callbacks.radar_data}
-  max_possible: 1.0
-  inverse: true

@@ -1,0 +1,22 @@
+_target_: reliability_checklist.datamodules.common_datamodule.GeneralDataModule
+data_dir: ${paths.data_dir}
+batch_size: 1
+num_workers: 0
+pin_memory: False
+tokenizer_data: ${custom_model.tokenizer}
+model_type: ${custom_model.model_type}
+data_processing: ${custom_model.data_processing}
+dataset_specific_args:
+  label_conversion:
+    0: 0
+    2: 1
+    4: 2
+  label2id:
+    0: "negative"
+    1: "neutral"
+    2: "positive"
+  cols: ["text"]
+  name: sentiment140
+  split: test
+  remove_cols: ["query", "user", "date"]
+  label_col: "sentiment"

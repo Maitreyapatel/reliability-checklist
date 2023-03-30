@@ -1,8 +1,0 @@
-accuracy_callback:
-  _target_: reliability_score.callbacks.evals.discriminative.AccuracyMetric
-  monitor: "all"
-  results_dir: ${paths.result_dir}
-  override: null
-  radar: ${callbacks.radar_data}
-  max_possible: 100
-  inverse: false
