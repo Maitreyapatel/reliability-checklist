@@ -77,9 +77,7 @@ class GeneralDataModule(LightningDataModule):
         if self.data_processing.columns:
             for column_name, column_prefix in self.data_processing.columns.items():
                 dataset = dataset.map(
-                    lambda example: {
-                        column_name: " ".join([column_prefix, example[column_name]])
-                    },
+                    lambda example: {column_name: " ".join([column_prefix, example[column_name]])},
                     batched=False,
                 )
 
@@ -122,9 +120,7 @@ class GeneralDataModule(LightningDataModule):
             self.data_test = self.data_test.rename_column(self.label_col, "label")
         if self.label_conversion:
             self.data_test = self.data_test.map(
-                lambda batch: {
-                    "converted_label": self.label_conversion[batch["label"]]
-                },
+                lambda batch: {"converted_label": self.label_conversion[batch["label"]]},
                 batched=False,
                 remove_columns=["label"],
             )
@@ -144,9 +140,7 @@ class GeneralDataModule(LightningDataModule):
         logging.info("Performing tokenization...")
         old_columns = set(list(self.data_test.features.keys()))
         self.data_test = self.data_test.map(self.tokenization.process, batched=True)
-        self.label_conversion = process_label2id(
-            self.label2id, self.tokenizer_data.label2id
-        )
+        self.label_conversion = process_label2id(self.label2id, self.tokenizer_data.label2id)
         self.data_test = self.data_test.map(
             lambda batch: {"converted_label": self.label_conversion[batch["label"]]},
             batched=False,
@@ -180,9 +174,7 @@ class GeneralDataModule(LightningDataModule):
 
     def setup(self, stage: Optional[str] = None):
         if not self.data_test:
-            logging.error(
-                "It seems that dataset object was not declared. Attempting it again."
-            )
+            logging.error("It seems that dataset object was not declared. Attempting it again.")
             self.prepare_data()
 
     def train_dataloader(self):

@@ -133,9 +133,7 @@ class parrot_paraphraser(Augmentation):
 
     def augment(self):
         if not os.path.exists(self.csv_path):
-            logging.warn(
-                f"Could not find the pre-defined csv data file at: {self.csv_path}"
-            )
+            logging.warn(f"Could not find the pre-defined csv data file at: {self.csv_path}")
             self.perform_augmentation(self.dataset)
 
         new_dataset = Dataset.from_pandas(pd.read_csv(self.csv_path, delimiter="\t"))
