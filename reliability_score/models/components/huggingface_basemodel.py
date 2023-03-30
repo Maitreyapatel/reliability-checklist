@@ -75,7 +75,7 @@ class Model(torch.nn.Module):
                     for k, v in zip(self.label_inds, list(self.tokenizer_data.label2id.keys()))
                 }
 
-                self.inds2idx = {k: en for en, k in enumerate(sorted(self.label_inds))}
+                self.inds2idx = {k: en for en, k in enumerate(self.label_inds)}
                 self.idx2inds = {v: k for k, v in self.inds2idx.items()}
 
     def forward(self, inputs, labels):
