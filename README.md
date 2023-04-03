@@ -16,39 +16,45 @@
 
 # Description
 
-`reliability-checklist` is a Python framework (available via `CLI`) for reliability tests of Large Language Models.
+`reliability-checklist` is a Python framework (available via `CLI`) for Comprehensively Evaluating the Reliability of NLP Systems
 
-> `reliability-checklist` accepts any model and dataset as input and runs the test-suit of consisting all the important metrices to guide you to decide the most reliable model for your deployments.
+> `reliability-checklist` accepts any model and dataset as input and facilitates the comprehensive evaluation on a wide range of reliability-related aspects such as accuracy, selective prediction, novelty detection, stability, sensitivity, and calibration.
 
-**Why you might want to use it:**
+## **Why you might want to use it:**
 
 <b>✅ No coding needed</b><br>
-Pre-defined templates available to easily integrate your models/datasets via commandline only.
+Pre-defined templates available to easily integrate your models/datasets via command line only.
 
 <b>✅ Bring Your own Model (BYoM)</b><br>
-Your model template is missing!? We have got you covered: Checkout [BYoM](<>) to create your own model specific config file.
+Your model template is missing? We have you covered: Check out [BYoM](<>) to create your own model specific config file.
 
 <b>✅ Bring Your own Data (BYoD)</b><br>
-Your dataset template is missing!? Again we have got you covered: Checkout [BYoD](<>) to create your own dataset specific config file.
+Your dataset template is missing? Check out [BYoD](<>) to create your own dataset specific config file.
 
 <b>✅ Reliability metrics</b><br>
-Currently, we support various reliability metrics specific to the classification tasks:
+Currently, we support a number of reliability related aspects:
 
-- <b>Standard metrics:</b> Accuracy/F1/Precision/Recall
-- <b>Calibration tests:</b> Expected Calibration Error (ECE), Expected Overconfidence Error (EOE)
-- <b>Selective Prediction:</b> Selective Prediction Error (SPE), Risk-Coverage Curve (RCC)
-- <b>🌟 Proposed new metrics:</b> Sensitivity (our very own), and Stability
 
-## **Upcoming feature releases:**
+- <b>Accuracy/F1/Precision/Recall</b>
+- <b>Calibration:</b> Reliability Diagramm Expected Calibration Error (ECE), Expected Overconfidence Error (EOE)
+- <b>Selective Prediction:</b> Risk-Coverage Curve (RCC), AUC of risk-coverage curve
+- <b>Sensitivity</b>
+- <b>Stability</b>
+- <b>Out-of-Distribution</b>
 
-- <b>Adversarial Attack:</b> Model in the loop discrete adversarial attacks to learn more about failures
-- <b>Out-of-Distribution:</b> Support to have many relevant OOD datasets
-- <b>Task Specific Augmentations:</b> Task specific augmentations to check the reliability on highly optimized test cases
+
+
+## **Upcoming Reliability Aspects:**
+
+- <b>Adversarial Attack:</b> Model in the loop adversarial attacks to evaluate model's robustness.
+- <b>Task-Specific Augmentations:</b> Task-specific augmentations to check the reliability on augmented inputs.
+- <b>Novelty</b>
+- <b>Other Measures:</b> We plan to incorporate other measures such as bias, fairness, toxicity, and faithfulness of models. We also plan to measure the reliability of generative models on crucial parameters such as hallucinations.
 
 ## Workflow
 
 <b>✅ Want to integrate more features?</b><br>
-Our easy-to-develop infrastructure allows developers to contribute any models, datasets, augmentations, and evaluation metrics seamlessly to the workflow.
+Our easy-to-develop infrastructure allows developers to contribute models, datasets, augmentations, and evaluation metrics seamlessly to the workflow.
 
 ![workflow](extras/recheck_workflow.jpg)
 
