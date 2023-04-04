@@ -34,15 +34,12 @@ Your dataset template is missing? Check out [BYoD](<>) to create your own datase
 <b>✅ Reliability metrics</b><br>
 Currently, we support a number of reliability related aspects:
 
-
 - <b>Accuracy/F1/Precision/Recall</b>
-- <b>Calibration:</b> Reliability Diagramm Expected Calibration Error (ECE), Expected Overconfidence Error (EOE)
+- <b>Calibration:</b> Reliability Diagram Expected Calibration Error (ECE), Expected Overconfidence Error (EOE)
 - <b>Selective Prediction:</b> Risk-Coverage Curve (RCC), AUC of risk-coverage curve
 - <b>Sensitivity</b>
 - <b>Stability</b>
 - <b>Out-of-Distribution</b>
-
-
 
 ## **Upcoming Reliability Aspects:**
 
@@ -106,6 +103,12 @@ mkdir ./configs/custom_model/
 recheck task=mnli custom_model=<your-config>
 ```
 
+# Visualization of results
+
+`reliability-checklist` supports the wide range of visualization tools. One can decide to go with default wandb online visualizer. It also generates plots that are highly informative which will be stored into `logs` directory.
+
+<img src="extras/example_results.png">
+
 # 🤝 Contributing to `reliability-checklist`
 
 Any kind of positive contribution is welcome! Please help us to grow by contributing to the project.
@@ -117,5 +120,5 @@ If you wish to contribute, you can work on any features/issues [listed here](htt
 ______________________________________________________________________
 
 <h1 align="center">
-A ⭐️ to <b>reliability-checklist</b> is to build the reliability of LLMs.
+A ⭐️ to <b>reliability-checklist</b> is to build the reliability of Language Models.
 </h1>
