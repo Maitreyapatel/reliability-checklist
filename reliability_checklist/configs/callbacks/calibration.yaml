@@ -5,5 +5,5 @@ calibration_callback:
   num_bins: 10
   override: null
   radar: ${callbacks.radar_data}
-  max_possible: 0.5
+  max_possible: 1.0
   inverse: true
