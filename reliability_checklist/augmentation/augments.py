@@ -10,6 +10,12 @@ from reliability_checklist.augmentation.mnli.augmentation import nli_augmentatio
 from reliability_checklist.augmentation.mnli.num_word import num_word_augmentation
 from reliability_checklist.augmentation.mnli.rand_sent import rand_sentence_augmentation
 from reliability_checklist.augmentation.mnli.swap_ant import swap_ant_augmentation
+from reliability_checklist.augmentation.sentiment_analysis.back_translate import (
+    back_translate_augmentation,
+)
+from reliability_checklist.augmentation.sentiment_analysis.double_denial import (
+    double_denial_augmentation,
+)
 
 
 class Augmentation:
@@ -79,6 +85,24 @@ class swap_ant_aug(Augmentation):
     def __init__(self, __name__="SWAP_ANT", dataset=None):
         super().__init__(__name__, dataset)
         self.augmenter = swap_ant_augmentation()
+
+    def augment(self):
+        self.dataset = self.augmenter.infer(self.dataset)
+
+
+class back_translate_aug(Augmentation):
+    def __init__(self, __name__="BACK_TRANS", dataset=None, cols=None):
+        super().__init__(__name__, dataset)
+        self.augmenter = back_translate_augmentation(cols)
+
+    def augment(self):
+        self.dataset = self.augmenter.infer(self.dataset)
+
+
+class double_denial_aug(Augmentation):
+    def __init__(self, __name__="DOUBLE_DENIAL", dataset=None, cols=None):
+        super().__init__(__name__, dataset)
+        self.augmenter = double_denial_augmentation(cols)
 
     def augment(self):
         self.dataset = self.augmenter.infer(self.dataset)
