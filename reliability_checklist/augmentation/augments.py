@@ -6,23 +6,16 @@ import pandas as pd
 from datasets import ClassLabel, Dataset
 from tqdm import tqdm
 
-<<<<<<< HEAD:reliability_score/augmentation/augments.py
-from reliability_score.augmentation.mnli.augmentation import nli_augmentations
-from reliability_score.augmentation.mnli.num_word import num_word_augmentation
-from reliability_score.augmentation.mnli.rand_sent import rand_sentence_augmentation
-from reliability_score.augmentation.mnli.swap_ant import swap_ant_augmentation
-from reliability_score.augmentation.sentiment_analysis.back_translate import (
-    back_translate_augmentation,
-)
-from reliability_score.augmentation.sentiment_analysis.double_denial import (
-    double_denial_augmentation,
-)
-=======
 from reliability_checklist.augmentation.mnli.augmentation import nli_augmentations
 from reliability_checklist.augmentation.mnli.num_word import num_word_augmentation
 from reliability_checklist.augmentation.mnli.rand_sent import rand_sentence_augmentation
 from reliability_checklist.augmentation.mnli.swap_ant import swap_ant_augmentation
->>>>>>> develop:reliability_checklist/augmentation/augments.py
+from reliability_checklist.augmentation.sentiment_analysis.back_translate import (
+    back_translate_augmentation,
+)
+from reliability_checklist.augmentation.sentiment_analysis.double_denial import (
+    double_denial_augmentation,
+)
 
 
 class Augmentation:
