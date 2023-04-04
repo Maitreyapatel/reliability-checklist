@@ -1,0 +1,4 @@
+no_augmentation:
+  _target_: reliability_checklist.augmentation.augments.NoAug
+  _partial_: true
+  __name__: "DEFAULT"

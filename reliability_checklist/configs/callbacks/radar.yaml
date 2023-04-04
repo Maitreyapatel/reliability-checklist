@@ -1,0 +1,4 @@
+radar_data:
+  get_radar: true
+  model_name: ${custom_model.model_name}
+  older_models: null

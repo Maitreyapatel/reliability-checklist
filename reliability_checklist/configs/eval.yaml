@@ -1,0 +1,20 @@
+# @package _global_
+
+defaults:
+  - _self_
+  - augmentation: default.yaml
+  - callbacks: default.yaml
+  - datamodule: mnli.yaml # choose datamodule with `test_dataloader()` for evaluation
+  - model: inference.yaml
+  - logger: wandb.yaml
+  - trainer: default.yaml
+  - paths: default.yaml
+  - extras: default.yaml
+  - hydra: default.yaml
+  - custom_model: bert_base_uncased.yaml
+
+  - task: null
+
+task_name: "eval"
+
+tags: ["dev"]

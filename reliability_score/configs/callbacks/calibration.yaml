@@ -1,6 +1,0 @@
-calibration_callback:
-  _target_: reliability_score.callbacks.evals.discriminative.CalibrationMetric
-  monitor: "all"
-  results_dir: ${paths.result_dir}
-  num_bins: 10
-  override: null

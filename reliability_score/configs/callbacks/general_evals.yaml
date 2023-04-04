@@ -1,6 +1,0 @@
-defaults:
-  - default.yaml
-  - acc.yaml
-  - calibration.yaml
-  - sensitivity.yaml
-  - selective_prediction.yaml

@@ -14,18 +14,18 @@ def package_files(directory):
     return paths
 
 
-extra_files = package_files("reliability_score/configs/")
+extra_files = package_files("reliability_checklist/configs/")
 
 setup(
-    name="reliability-score",
-    version="0.0.1",
+    name="reliability-checklist",
+    version="0.0.3",
     description="A suite of reliability tests on NLP models.",
     author="Maitreya Patel",
     author_email="patel.maitreya57@gmail.com",
-    url="https://github.com/Maitreyapatel/reliability-score",
+    url="https://github.com/Maitreyapatel/reliability-checklist",
     install_requires=["pytorch-lightning", "hydra-core"],
     packages=find_packages(),
-    package_data={"reliability_score": extra_files},
-    entry_points={"console_scripts": ["rs=reliability_score.eval:main"]},
+    package_data={"reliability_checklist": extra_files},
+    entry_points={"console_scripts": ["recheck=reliability_checklist.eval:main"]},
     include_package_data=True,
 )

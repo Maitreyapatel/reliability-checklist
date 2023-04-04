@@ -1,4 +1,0 @@
-no_augmentation:
-  _target_: reliability_score.augmentation.augments.NoAug
-  _partial_: true
-  __name__: "DEFAULT"

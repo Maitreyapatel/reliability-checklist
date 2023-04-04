@@ -3,20 +3,20 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to reliability-score's documentation!
+Welcome to reliability-checklist's documentation!
 ============================================
 
-`reliability-score <https://github.com/Maitreyapatel/reliability-score>`_ attempts to overcome the limitations of Language-Models on robustness.
+`reliability-checklist <https://github.com/Maitreyapatel/reliability-checklist>`_ attempts to overcome the limitations of Language-Models on robustness.
 
 This tool is developed in such a way that you don't need to do any coding as far as your pre-trained model is available on huggingface space or developed using transformers library.
 
-If you are new to the reliability-score, please use following links for installation guidance and example tutorial:
+If you are new to the reliability-checklist, please use following links for installation guidance and example tutorial:
 
    :ref:`installation <installation>`
 
-   :ref:`reliability-score 101 <tool101>`
+   :ref:`reliability-checklist 101 <tool101>`
 
-   :ref:`reliability-score 201 <tool201>`
+   :ref:`reliability-checklist 201 <tool201>`
 
 If you have already setup the tool, then feel free to refer following pages for BYoM (Bring Your own Model) based evaluations:
 

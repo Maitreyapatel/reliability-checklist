@@ -1,0 +1,7 @@
+parrot_paraphraser:
+  _target_: reliability_checklist.augmentation.augments.parrot_paraphraser
+  _partial_: true
+  __name__: "parrot"
+  dataset_name: ${datamodule.dataset_specific_args.name}
+  csv_path: "./data/parrot_{}.csv"
+  cols: ${datamodule.dataset_specific_args.cols}
