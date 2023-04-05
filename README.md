@@ -53,7 +53,7 @@ Currently, we support a number of reliability related aspects:
 <b>✅ Want to integrate more features?</b><br>
 Our easy-to-develop infrastructure allows developers to contribute models, datasets, augmentations, and evaluation metrics seamlessly to the workflow.
 
-![workflow](extras/recheck_workflow.jpg)
+![workflow](extras/recheck_workflow.svg)
 
 # How to install?
 

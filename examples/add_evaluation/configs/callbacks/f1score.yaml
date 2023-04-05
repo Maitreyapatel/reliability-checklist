@@ -1,0 +1,9 @@
+f1score_metric:
+  _target_: src.new_metric.F1Metric
+  monitor: "all"
+  results_dir: ${paths.result_dir} ## do not change
+  override: null
+  radar: ${callbacks.radar_data} ## do not change
+  max_possible: 1.0 ## define the maximum possible value
+  inverse: false
+  average: weighted ## newly defined variable according to f1score: 'macro', 'micro', 'weighted', null
