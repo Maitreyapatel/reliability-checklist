@@ -16,6 +16,11 @@ git+https://github.com/pattern3/pattern.git
 git+https://github.com/PrithivirajDamodaran/Parrot_Paraphraser.git
 scikit_learn==1.2.1
 
+# --------sphinx----------- #
+sphinx
+sphinx_rtd_theme<=2.0.0
+furo
+
 # --------- hydra --------- #
 hydra-core==1.2.0
 hydra-colorlog==1.2.0
