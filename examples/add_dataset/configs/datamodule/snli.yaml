@@ -1,0 +1,19 @@
+_target_: reliability_checklist.datamodules.common_datamodule.GeneralDataModule
+data_dir: ${paths.data_dir}
+batch_size: 1
+num_workers: 0
+pin_memory: False
+tokenizer_data: ${custom_model.tokenizer}
+model_type: ${custom_model.model_type}
+data_processing: ${custom_model.data_processing}
+dataset_specific_args:
+  label_conversion: null
+  label2id:
+    0: "entailment"
+    1: "neutral"
+    2: "contradiction"
+  cols: ["premise", "hypothesis"]
+  name: snli
+  split: test
+  remove_cols: []
+  label_col: "label"

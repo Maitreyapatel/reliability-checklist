@@ -1,6 +1,7 @@
-from reliability_checklist.callbacks.evals.discriminative import MonitorBasedMetric
-from sklearn.metrics import f1_score
 import numpy as np
+from sklearn.metrics import f1_score
+
+from reliability_checklist.callbacks.evals.discriminative import MonitorBasedMetric
 
 
 class F1Metric(MonitorBasedMetric):
@@ -15,9 +16,7 @@ class F1Metric(MonitorBasedMetric):
         inverse=False,
         average=None,
     ):
-        super().__init__(
-            monitor, name, results_dir, override, radar, max_possible, inverse
-        )
+        super().__init__(monitor, name, results_dir, override, radar, max_possible, inverse)
         self.average = average
 
     def init_logic(self) -> dict:
@@ -31,9 +30,7 @@ class F1Metric(MonitorBasedMetric):
         return result
 
     def end_logic(self, saved) -> dict:
-        result = {
-            "f1score": f1_score(saved["y_true"], saved["y_pred"], average=self.average)
-        }
+        result = {"f1score": f1_score(saved["y_true"], saved["y_pred"], average=self.average)}
         extra = None
         return result, extra
 

@@ -47,6 +47,8 @@ class MonitorBasedMetric(Callback):
                 self.storage[key][k].append(v)
             elif isinstance(v, list):
                 self.storage[key][k] += v
+            elif type(v).__module__ == np.__name__:
+                self.storage[key][k] += list(v)
             else:
                 raise NotImplementedError
 
