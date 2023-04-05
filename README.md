@@ -3,7 +3,7 @@
 <img src="extras/logo-no-background.png" width="50%">
 
 <p align="center">
-  <a href="#">[documentation]</a>
+  <a href="https://reliability-checklist.readthedocs.io/en/readthedocs/">[documentation]</a>
   <br> <br>
 </p>
 

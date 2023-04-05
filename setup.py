@@ -18,7 +18,7 @@ extra_files = package_files("reliability_checklist/configs/")
 
 setup(
     name="reliability-checklist",
-    version="0.0.3",
+    version="0.1.0",
     description="A suite of reliability tests on NLP models.",
     author="Maitreya Patel",
     author_email="patel.maitreya57@gmail.com",
