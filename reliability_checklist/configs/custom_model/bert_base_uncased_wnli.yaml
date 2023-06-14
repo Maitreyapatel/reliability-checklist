@@ -1,0 +1,32 @@
+## below parameters are self-explanatory
+model_name: "Li/bert-base-uncased-qnli"
+model_type: "discriminative" ## you can only have following types: "encode-decode","decoder-only","bart","discriminative","shared","hybrid","t5",
+huggingface_class: null
+decoder_model_name: null
+model_path: null ## provide the path if you have custom trained model using transformers library
+tie_embeddings: false
+label: null
+tie_encoder_decoder: false
+pipeline: null
+
+additional_model_inputs: null ## specify the additional pre-defined input to model like bean_search for generative models
+
+tokenizer:
+  model_name: ${..model_name} ## only specify the name from huggingface if it's different than the actual  model
+  label2id: ## this will vary based on the evaluation data, please refer to the your selected dataset config
+    not_entailment: 0
+    entailment: 1
+  args:
+    truncation: true
+    padding: "max_length"
+
+## use following dataset pre-processing steps
+data_processing:
+  header: null ## prompt header for input data?
+  footer: null ## prompt header for signling output?
+  separator: " [SEP] " ## what is separator token? leave `null` for generative models
+  columns:
+    null
+    ## you should define this only for generative or for prompt eng. models as shown below
+    # premise: null
+    # hypothesis: null
