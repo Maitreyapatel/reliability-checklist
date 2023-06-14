@@ -30,6 +30,7 @@ class GeneralDataModule(LightningDataModule):
 
         self.label2id = dataset_specific_args["label2id"]
         self.cols = dataset_specific_args["cols"]
+        self.dataset_parent = dataset_specific_args["parent"]
         self.dataset_name = dataset_specific_args["name"]
         self.dataset_split = dataset_specific_args["split"]
         self.dataset_rmcols = dataset_specific_args["remove_cols"]
@@ -114,7 +115,10 @@ class GeneralDataModule(LightningDataModule):
         return dataset
 
     def prepare_data(self):
-        self.data_test = load_dataset(self.dataset_name, split=self.dataset_split)
+        if not self.dataset_parent:
+            self.data_test = load_dataset(self.dataset_name, split=self.dataset_split)
+        else:
+            self.data_test = load_dataset(self.dataset_parent, self.dataset_name, split=self.dataset_split)
         self.data_test = self.data_test.remove_columns(self.dataset_rmcols)
         if self.label_col != "label":
             self.data_test = self.data_test.rename_column(self.label_col, "label")
