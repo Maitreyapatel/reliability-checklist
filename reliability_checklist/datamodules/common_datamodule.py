@@ -118,7 +118,9 @@ class GeneralDataModule(LightningDataModule):
         if not self.dataset_parent:
             self.data_test = load_dataset(self.dataset_name, split=self.dataset_split)
         else:
-            self.data_test = load_dataset(self.dataset_parent, self.dataset_name, split=self.dataset_split)
+            self.data_test = load_dataset(
+                self.dataset_parent, self.dataset_name, split=self.dataset_split
+            )
         self.data_test = self.data_test.remove_columns(self.dataset_rmcols)
         if self.label_col != "label":
             self.data_test = self.data_test.rename_column(self.label_col, "label")
