@@ -7,17 +7,13 @@ tokenizer_data: ${custom_model.tokenizer}
 model_type: ${custom_model.model_type}
 data_processing: ${custom_model.data_processing}
 dataset_specific_args:
-  label_conversion:
-    0: 0
-    2: 1
-    4: 2
+  label_conversion: null
   label2id:
-    0: "negative"
-    1: "neutral"
-    2: "positive"
-  cols: ["text"]
-  parent: null
-  name: sentiment140
-  split: test
-  remove_cols: ["query", "user", "date"]
-  label_col: "sentiment"
+    1: "entailment"
+    0: "not_entailment"
+  cols: ["sentence1", "sentence2"]
+  parent: glue
+  name: wnli
+  split: validation
+  remove_cols: ["idx"]
+  label_col: "label"

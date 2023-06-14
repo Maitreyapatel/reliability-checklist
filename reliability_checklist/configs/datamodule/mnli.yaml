@@ -13,6 +13,7 @@ dataset_specific_args:
     1: "neutral"
     2: "contradiction"
   cols: ["premise", "hypothesis"]
+  parent: null
   name: multi_nli
   split: validation_matched
   remove_cols: ["promptID", "pairID"]
