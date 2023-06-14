@@ -1,0 +1,18 @@
+# @package _global_
+
+# to execute this experiment run:
+# python train.py experiment=example
+
+defaults:
+  - override /datamodule: sst2.yaml
+  - override /model: inference.yaml
+  - override /callbacks: general_evals.yaml
+  - override /trainer: default.yaml
+  - override /custom_model: distilbert-base-uncased-finetuned-sst-2-english.yaml
+
+# all parameters below will be merged with parameters from default configurations set above
+# this allows you to overwrite only specified parameters
+
+tags: ["sst2", "test"]
+
+seed: 42
