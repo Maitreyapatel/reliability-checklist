@@ -16,7 +16,7 @@ from reliability_checklist.augmentation.sentiment_analysis.back_translate import
 from reliability_checklist.augmentation.sentiment_analysis.double_denial import (
     double_denial_augmentation,
 )
-
+from reliability_checklist.augmentation.mrpc.rand_sent_mrpc import rand_sentence_augmentation_mrpc
 
 class Augmentation:
     def __init__(self, __name__, dataset=None):
@@ -107,6 +107,13 @@ class double_denial_aug(Augmentation):
     def augment(self):
         self.dataset = self.augmenter.infer(self.dataset)
 
+class rand_sent_aug_mrpc(Augmentation):
+    def __init__(self, __name__="RAND_SENT_MRPC", dataset=None):
+        super().__init__(__name__, dataset)
+        self.augmenter = rand_sentence_augmentation_mrpc()
+
+    def augment(self):
+        self.dataset = self.augmenter.infer(self.dataset)
 
 class parrot_paraphraser(Augmentation):
     def __init__(
