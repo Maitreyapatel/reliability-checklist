@@ -17,6 +17,7 @@ from reliability_checklist.augmentation.sentiment_analysis.double_denial import 
     double_denial_augmentation,
 )
 from reliability_checklist.augmentation.mrpc.rand_sent_mrpc import rand_sentence_augmentation_mrpc
+from reliability_checklist.augmentation.qqp.max_match_aug import maximum_string_match_aug_qqp
 
 class Augmentation:
     def __init__(self, __name__, dataset=None):
@@ -111,6 +112,14 @@ class rand_sent_aug_mrpc(Augmentation):
     def __init__(self, __name__="RAND_SENT_MRPC", dataset=None):
         super().__init__(__name__, dataset)
         self.augmenter = rand_sentence_augmentation_mrpc()
+
+    def augment(self):
+        self.dataset = self.augmenter.infer(self.dataset)
+
+class max_match_aug_qqp(Augmentation):
+    def __init__(self, __name__="MAX_MATCH_AUG", dataset=None):
+        super().__init__(__name__, dataset)
+        self.augmenter = maximum_string_match_aug_qqp()
 
     def augment(self):
         self.dataset = self.augmenter.infer(self.dataset)

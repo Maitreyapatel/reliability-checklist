@@ -9,6 +9,7 @@ defaults:
   - override /callbacks: general_evals.yaml
   - override /trainer: default.yaml
   - override /custom_model: bert_base_uncased_qqp.yaml
+  - override /augmentation: qqp.yaml
 
 # all parameters below will be merged with parameters from default configurations set above
 # this allows you to overwrite only specified parameters

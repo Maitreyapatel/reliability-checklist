@@ -41,7 +41,7 @@ class rand_sentence_augmentation_mrpc:
 
             new_dataset["sentence1"].append(modified_prior)
             new_dataset["sentence2"].append(dataset["sentence2"][i])
-            print(modified_prior, dataset["sentence2"][i])
+            
             new_dataset["label"].append(0)
             new_dataset["mapping"].append(i)
             for k in datacols:
