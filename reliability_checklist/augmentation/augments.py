@@ -18,6 +18,7 @@ from reliability_checklist.augmentation.sentiment_analysis.double_denial import 
 )
 from reliability_checklist.augmentation.mrpc.rand_sent_mrpc import rand_sentence_augmentation_mrpc
 from reliability_checklist.augmentation.qqp.max_match_aug import maximum_string_match_aug_qqp
+from reliability_checklist.augmentation.qnli.swap_ant_qnli import swap_antonym_aug_qnli
 
 class Augmentation:
     def __init__(self, __name__, dataset=None):
@@ -120,6 +121,14 @@ class max_match_aug_qqp(Augmentation):
     def __init__(self, __name__="MAX_MATCH_AUG", dataset=None):
         super().__init__(__name__, dataset)
         self.augmenter = maximum_string_match_aug_qqp()
+
+    def augment(self):
+        self.dataset = self.augmenter.infer(self.dataset)
+
+class swap_ant_aug_qnli(Augmentation):
+    def __init__(self, __name__="SWAP_ANT_QNLI", dataset=None):
+        super().__init__(__name__, dataset)
+        self.augmenter = swap_antonym_aug_qnli()
 
     def augment(self):
         self.dataset = self.augmenter.infer(self.dataset)
