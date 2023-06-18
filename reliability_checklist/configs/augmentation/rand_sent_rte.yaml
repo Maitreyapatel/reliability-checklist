@@ -1,0 +1,4 @@
+rand_sent_augmentation:
+  _target_: reliability_checklist.augmentation.augments.rand_sent_aug_rte
+  _partial_: true
+  __name__: "RAND_SENT_RTE"

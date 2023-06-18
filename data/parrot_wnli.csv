@@ -1,0 +1,143 @@
+	sentence1	sentence2	label	primary_key	mapping
+0	"(""jane knocked on susan's door but she didn't reply"", 21)"	"(""susan didn't answer"", 15)"	1	1	1
+1	"(""jane knocked on susan's door but she didn't reply"", 21)"	"(""susan didn't answer"", 15)"	1	1	1
+2	"(""Beth didn't get angry with Sally, who had cut her off, because she stopped and counted to ten."", 0)"	('Sally stopped and counted to ten.', 0)	0	2	2
+3	"(""no one joins facebook because they are lonely or lonely but a new study by psychologist george lincoln from the university of wisconsin argues that that's what it makes us feel"", 95)"	('facebook makes us feel exactly like that', 42)	1	3	3
+4	"(""no one joins facebook because they are lonely or lonely but a new study by psychologist george lincoln from the university of wisconsin argues that that's what it makes us feel"", 95)"	('facebook makes us feel exactly like that', 42)	1	3	3
+5	"(""no one joins facebook because they are lonely or lonely but a new study by psychologist george lincoln from the university of wisconsin argues that that's what it makes us feel"", 95)"	('facebook makes us feel exactly like that', 42)	1	3	3
+6	"(""no one joins facebook because they are lonely or lonely but a new study by psychologist george lincoln from the university of wisconsin argues that that's what it makes us feel"", 95)"	('facebook makes us feel exactly like that', 42)	1	3	3
+7	"(""no one joins facebook because they are lonely or lonely but a new study by psychologist george lincoln from the university of wisconsin argues that that's what it makes us feel"", 95)"	('facebook makes us feel exactly like that', 42)	1	3	3
+8	"(""no one joins facebook because they are lonely or lonely but a new study by psychologist george lincoln from the university of wisconsin argues that that's what it makes us feel"", 95)"	('facebook makes us feel exactly like that', 42)	1	3	3
+9	"(""no one joins facebook because they are lonely or lonely but a new study by psychologist george lincoln from the university of wisconsin argues that that's what it makes us feel"", 95)"	('facebook makes us feel exactly like that', 42)	1	3	3
+10	"(""susan knew ann's son had been in a car accident and told her of the accident"", 36)"	('ann told her', 22)	0	5	5
+11	('when tommy dropped his ice cream timmy giggled and the father looked at him with a scorn', 37)	('father showed timmy a tough look', 23)	1	6	6
+12	('when tommy dropped his ice cream timmy giggled and the father looked at him with a scorn', 37)	('father showed timmy a tough look', 23)	1	6	6
+13	"(""i can't see between me and the stage"", 52)"	"(""i can't see around the pillar"", 13)"	1	7	7
+14	('Look! There is a minnow swimming right below that duck! It had better get away to safety fast!', 0)	('the duck should go to safety quickly', 36)	0	8	8
+15	('Bernard, who had not told the government official that he was less than 21 when he filed for a homestead claim, did not consider that he had done anything dishonest. Still, anyone who knew that he was 19 years old could take his claim away from him.', 0)	('Anyone who knew that he was 19 years old could take his claim away from anyone.', 0)	0	9	9
+16	('when the sponsors of the bill arrived at town hall they were surprised to find the room full of opponents', 69)	('the sponsors were extremely popular', 34)	0	10	10
+17	('when the sponsors of the bill arrived at town hall they were surprised to find the room full of opponents', 69)	('the sponsors were extremely popular', 34)	0	10	10
+18	('the big ball hit the table because it was made of styrofoam', 35)	('the ball was made of styrofoam', 19)	0	12	12
+19	('i tried to paint a picture of an orchard with lemons in the lemon trees but they looked more like bulb lights', 35)	('the lemons appeared to me more like light bulbs', 31)	0	13	13
+20	('i tried to paint a picture of an orchard with lemons in the lemon trees but they looked more like bulb lights', 35)	('the lemons appeared to me more like light bulbs', 31)	0	13	13
+21	('i tried to paint a picture of an orchard with lemons in the lemon trees but they looked more like bulb lights', 35)	('the lemons appeared to me more like light bulbs', 31)	0	13	13
+22	('i tried to paint a picture of an orchard with lemons in the lemon trees but they looked more like bulb lights', 35)	('the lemons appeared to me more like light bulbs', 31)	0	13	13
+23	('i tried to paint a picture of an orchard with lemons in the lemon trees but they looked more like bulb lights', 35)	('the lemons appeared to me more like light bulbs', 31)	0	13	13
+24	('i tried to paint a picture of an orchard with lemons in the lemon trees but they looked more like bulb lights', 35)	('the lemons appeared to me more like light bulbs', 31)	0	13	13
+25	"(""if the con artist could fool sam he'd get a lot of money"", 44)"	('sam would have been rich', 31)	0	15	15
+26	('the lawyer asked the witness a question but he was unwilling to repeat it', 21)	('the attorney had been reluctant to repeat it', 23)	1	16	16
+27	('the lawyer asked the witness a question but he was unwilling to repeat it', 21)	('the attorney had been reluctant to repeat it', 23)	1	16	16
+28	('the lawyer asked the witness a question but he was unwilling to repeat it', 21)	('the attorney had been reluctant to repeat it', 23)	1	16	16
+29	('everyone loved the oatmeal cookies only a few people liked the chocolate chip cookies', 60)	('we should reduce our oatmeal cookies', 26)	0	17	17
+30	('everyone loved the oatmeal cookies only a few people liked the chocolate chip cookies', 60)	('we should reduce our oatmeal cookies', 26)	0	17	17
+31	('Bob collapsed on the sidewalk. Soon he saw Carl coming to help. He was very ill.', 0)	('carl was very sick', 16)	0	18	18
+32	"(""moncrieff visited chester's luxury apartment in new york thinking that it belonged to his son edward the result is that mr moncrieff has decided to cancel edward's allowance on the ground that he no longer needs"", 71)"	"(""he does not require chester's financial support anymore"", 28)"	0	19	19
+33	"(""moncrieff visited chester's luxury apartment in new york thinking that it belonged to his son edward the result is that mr moncrieff has decided to cancel edward's allowance on the ground that he no longer needs"", 71)"	"(""he does not require chester's financial support anymore"", 28)"	0	19	19
+34	"(""moncrieff visited chester's luxury apartment in new york thinking that it belonged to his son edward the result is that mr moncrieff has decided to cancel edward's allowance on the ground that he no longer needs"", 71)"	"(""he does not require chester's financial support anymore"", 28)"	0	19	19
+35	"('Tatyana knew that Grandma always enjoyed serving an abundance of food to her guests. Now Tatyana watched as Grandma gathered Tatyana\'s small mother into a wide, scrawny embrace and then propelled her to the table, lifting her shawl from her shoulders, seating her in the place of honor, and saying simply: ""There\'s plenty.""', 0)"	"(""grandma gathered tatyana's small mother into a wide scrawny embrace and then lifted tatyana to the table"", 20)"	0	20	20
+36	('george got free tickets to the show but gave them to eric even though he was eager to see it', 33)	('eric wanted to see it', 31)	0	22	22
+37	('george got free tickets to the show but gave them to eric even though he was eager to see it', 33)	('eric wanted to see it', 31)	0	22	22
+38	('george got free tickets to the show but gave them to eric even though he was eager to see it', 33)	('eric wanted to see it', 31)	0	22	22
+39	('george got free tickets to the show but gave them to eric even though he was eager to see it', 33)	('eric wanted to see it', 31)	0	22	22
+40	('the delivery truck was zooming behind the school bus because it was travelling so slowly', 33)	('the bus was so slow', 26)	1	23	23
+41	('the delivery truck was zooming behind the school bus because it was travelling so slowly', 33)	('the bus was so slow', 26)	1	23	23
+42	('the delivery truck was zooming behind the school bus because it was travelling so slowly', 33)	('the bus was so slow', 26)	1	23	23
+43	('the delivery truck was zooming behind the school bus because it was travelling so slowly', 33)	('the bus was so slow', 26)	1	23	23
+44	('the delivery truck was zooming behind the school bus because it was travelling so slowly', 33)	('the bus was so slow', 26)	1	23	23
+45	('jane gave joan a treat because she was hungry', 20)	('jane felt hungry', 17)	0	24	24
+46	"(""mark heard steve's feet running down the ladder and the door of the shop closed"", 62)"	('mark went looking out the window', 20)	1	25	25
+47	"(""mark heard steve's feet running down the ladder and the door of the shop closed"", 62)"	('mark went looking out the window', 20)	1	25	25
+48	('Although they ran at about the same speed, Sue beat Sally because she had such a good start.', 0)	('sally had a good start', 18)	0	26	26
+49	"(""larry had always helped his father work but now he couldn't help him because dad said his boss in the railroad company would not want anyone else but him to work in the office"", 61)"	"(""larry couldn't help him now"", 15)"	1	28	28
+50	"(""larry had always helped his father work but now he couldn't help him because dad said his boss in the railroad company would not want anyone else but him to work in the office"", 61)"	"(""larry couldn't help him now"", 15)"	1	28	28
+51	('george received free tickets to the show but he gave them to eric because he was a fan', 47)	('eric was especially anxious to see it', 28)	1	29	29
+52	('george received free tickets to the show but he gave them to eric because he was a fan', 47)	('eric was especially anxious to see it', 28)	1	29	29
+53	('george received free tickets to the show but he gave them to eric because he was a fan', 47)	('eric was especially anxious to see it', 28)	1	29	29
+54	('george received free tickets to the show but he gave them to eric because he was a fan', 47)	('eric was especially anxious to see it', 28)	1	29	29
+55	('george received free tickets to the show but he gave them to eric because he was a fan', 47)	('eric was especially anxious to see it', 28)	1	29	29
+56	('george received free tickets to the show but he gave them to eric because he was a fan', 47)	('eric was especially anxious to see it', 28)	1	29	29
+57	('george received free tickets to the show but he gave them to eric because he was a fan', 47)	('eric was especially anxious to see it', 28)	1	29	29
+58	('george received free tickets to the show but he gave them to eric because he was a fan', 47)	('eric was especially anxious to see it', 28)	1	29	29
+59	('they broadcast an announcement but the subway came into the station and i could not hear him', 24)	"(""i couldn't hear the train"", 18)"	1	30	30
+60	('grant worked hard to harvest his beans so he and his family had enough to eat during that winter his friend henry let him stack them in his barn where they dried and later he and tatyana would shell them and cook them for their sunday dinners', 36)	('later he and tatyana shelled them and cooked them for sunday dinners', 34)	0	31	31
+61	('grant worked hard to harvest his beans so he and his family had enough to eat during that winter his friend henry let him stack them in his barn where they dried and later he and tatyana would shell them and cook them for their sunday dinners', 36)	('later he and tatyana shelled them and cooked them for sunday dinners', 34)	0	31	31
+62	('grant worked hard to harvest his beans so he and his family had enough to eat during that winter his friend henry let him stack them in his barn where they dried and later he and tatyana would shell them and cook them for their sunday dinners', 36)	('later he and tatyana shelled them and cooked them for sunday dinners', 34)	0	31	31
+63	('grant worked hard to harvest his beans so he and his family had enough to eat during that winter his friend henry let him stack them in his barn where they dried and later he and tatyana would shell them and cook them for their sunday dinners', 36)	('later he and tatyana shelled them and cooked them for sunday dinners', 34)	0	31	31
+64	"(""Beth didn't get angry with Sally, who had cut her off, because she stopped and apologized."", 0)"	('Sally stopped and apologized.', 0)	1	32	32
+65	"(""i can't see it"", 60)"	"(""i can't see around"", 23)"	1	33	33
+66	"(""i can't see it"", 60)"	"(""i can't see around"", 23)"	1	33	33
+67	('the older students were bullied and so we rescued them', 30)	('we helped them get out of the way', 31)	0	34	34
+68	('the older students were bullied and so we rescued them', 30)	('we helped them get out of the way', 31)	0	34	34
+69	('the older students were bullied and so we rescued them', 30)	('we helped them get out of the way', 31)	0	34	34
+70	('the older students were bullied and so we rescued them', 30)	('we helped them get out of the way', 31)	0	34	34
+71	"(""i'm sure my map will show that this building is very famous"", 26)"	('the building is famous', 18)	1	35	35
+72	('i tried to paint a picture of an orchard of lemons in the lemon trees but they looked like telephone poles', 34)	('the lemons appeared more like telephone poles', 28)	0	36	36
+73	('i tried to paint a picture of an orchard of lemons in the lemon trees but they looked like telephone poles', 34)	('the lemons appeared more like telephone poles', 28)	0	36	36
+74	('i tried to paint a picture of an orchard of lemons in the lemon trees but they looked like telephone poles', 34)	('the lemons appeared more like telephone poles', 28)	0	36	36
+75	('always before larry had helped his father with his work but now he could not help him because his boss at the railroad company would not want anyone but him to work in the office', 46)	"(""he couldn't help larry"", 19)"	0	37	37
+76	('always before larry had helped his father with his work but now he could not help him because his boss at the railroad company would not want anyone but him to work in the office', 46)	"(""he couldn't help larry"", 19)"	0	37	37
+77	('the man who did not inform the official that he was less than 21 when he filed for the homestead claim did not consider that he had done anything dishonest', 120)	('when he filed his claim for the homestead bernard was less than 21 years old', 61)	1	38	38
+78	('the man who did not inform the official that he was less than 21 when he filed for the homestead claim did not consider that he had done anything dishonest', 120)	('when he filed his claim for the homestead bernard was less than 21 years old', 61)	1	38	38
+79	('the water hose is blocked with hair and has to be cleaned', 25)	('the drain needs cleaning', 24)	1	39	39
+80	('the water hose is blocked with hair and has to be cleaned', 25)	('the drain needs cleaning', 24)	1	39	39
+81	"(""emma didn't throw the ball to janie even though she was open"", 25)"	('She saw that Emma was open.', 0)	0	41	41
+82	('john was researching in the library when he heard a man whistling and humming', 50)	('john was an annoying guy', 20)	0	42	42
+83	('john was researching in the library when he heard a man whistling and humming', 50)	('john was an annoying guy', 20)	0	42	42
+84	('john was researching in the library when he heard a man whistling and humming', 50)	('john was an annoying guy', 20)	0	42	42
+85	('the city council denied them a permit because they advocated violence', 33)	('the demonstrators pleaded for violence', 23)	1	43	43
+86	('the city council denied them a permit because they advocated violence', 33)	('the demonstrators pleaded for violence', 23)	1	43	43
+87	('the city council denied them a permit because they advocated violence', 33)	('the demonstrators pleaded for violence', 23)	1	43	43
+88	('the city council denied them a permit because they advocated violence', 33)	('the demonstrators pleaded for violence', 23)	1	43	43
+89	"(""i couldn't put it on the shelf because it was too high"", 19)"	('the pot was too high', 13)	0	44	44
+90	('several men from the gang were arrested as they tried to run the drug trade in the neighborhood', 50)	('the police tried to make the drug trade in the neighborhood', 25)	0	45	45
+91	('the cat lay still waiting for the mouse by the mouse hole but was too cautious', 47)	('the mouse was too careful', 18)	1	46	46
+92	('the cat lay still waiting for the mouse by the mouse hole but was too cautious', 47)	('the mouse was too careful', 18)	1	46	46
+93	('sam tried to paint a picture of shepherds with sheep but ended up looking more like golfers', 18)	('the sheep ended up more like golfers', 21)	0	47	47
+94	('sam tried to paint a picture of shepherds with sheep but ended up looking more like golfers', 18)	('the sheep ended up more like golfers', 21)	0	47	47
+95	('fred covered his eyes with his hands because the wind was blowing sand around them and when the wind stopped he opened them', 39)	('when the wind stopped he opened his eyes', 37)	1	48	48
+96	('when he finally calmed down and got home mr farley put the pebble in an iron safe', 130)	('they might want to use a safe someday', 31)	0	49	49
+97	('when he finally calmed down and got home mr farley put the pebble in an iron safe', 130)	('they might want to use a safe someday', 31)	0	49	49
+98	('when he finally calmed down and got home mr farley put the pebble in an iron safe', 130)	('they might want to use a safe someday', 31)	0	49	49
+99	('the cat was waiting by the hole but was too cautious', 46)	('the cat was too cautious', 13)	0	50	50
+100	('By rolling over in her upper berth, Tatyana could look over the edge of it and see her mother plainly. How very small and straight and rigid she lay in the bunk below! Her eyes were closed, but Tatyana doubted if she slept.', 0)	('How very small and straight and rigid her mother lay in the bunk below!', 0)	1	51	51
+101	('fred was supposed to do a dishwasher but he put it off because he wanted to watch tv but the show turned out to be boring so he changed his mind and turned off', 23)	('he changed his mind and shut the dishwasher down', 22)	0	52	52
+102	"(""Sam's drawing was hung just above Tina's and it did look much better with another one below it."", 0)"	"(""Tina's drawing did look much better with another one below it."", 0)"	0	53	53
+103	"(""papa looked at the faces of the children so confused and sad it was bad enough that they had to be denied so many things because he couldn't afford them"", 41)"	('he could not afford it', 24)	1	54	54
+104	('sam took french classes from adam because he was able to speak fluent french', 27)	('it was known that sam knew the language fluently', 29)	0	55	55
+105	('sam took french classes from adam because he was able to speak fluent french', 27)	('it was known that sam knew the language fluently', 29)	0	55	55
+106	('sam took french classes from adam because he was able to speak fluent french', 27)	('it was known that sam knew the language fluently', 29)	0	55	55
+107	('sam took french classes from adam because he was able to speak fluent french', 27)	('it was known that sam knew the language fluently', 29)	0	55	55
+108	('The journalists interviewed the stars of the new movie. They were very persistent, so the interview lasted for a long time.', 0)	('the reporters were very persistent so the interview lasted a long time', 25)	1	56	56
+109	"(""they broadcast an announcement but when a subway came into the station i couldn't hear it"", 22)"	"(""i didn't hear the subway"", 17)"	0	57	57
+110	('Fred and Alice had very warm down coats, but they were not enough for the cold in Alaska.', 0)	"(""hats didn't seem enough in alaska for the cold weather"", 38)"	1	58	58
+111	('the father held the boy in his arms', 28)	('the father carried the sleeping boy in his arms', 23)	1	59	59
+112	('the father held the boy in his arms', 28)	('the father carried the sleeping boy in his arms', 23)	1	59	59
+113	('madonna sacked her trainer because she slept with her boyfriend', 17)	('the girl slept with the boyfriend of the trainer', 32)	0	60	60
+114	"(""papa looked at the faces of the children so puzzled and sad it was awful enough that the children had to be denied so many things because he couldn't afford them"", 50)"	"(""he couldn't afford the children"", 13)"	0	61	61
+115	"(""papa looked at the faces of the children so puzzled and sad it was awful enough that the children had to be denied so many things because he couldn't afford them"", 50)"	"(""he couldn't afford the children"", 13)"	0	61	61
+116	('taylor was a man with uncertain temper and his general tendency was to think that david was a poor chump and that whatever step he took on his own account was just another proof of his innate idiocy', 38)	"(""each direction on his own account was just another proof of david's innate idiocy"", 14)"	1	63	63
+117	('taylor was a man with uncertain temper and his general tendency was to think that david was a poor chump and that whatever step he took on his own account was just another proof of his innate idiocy', 38)	"(""each direction on his own account was just another proof of david's innate idiocy"", 14)"	1	63	63
+118	('today joey built a sand castle on the beach and placed a toy flag in the highest tower but the wind knocked it down this afternoon', 57)	('the wind swept the castle down this afternoon', 45)	0	64	64
+119	('today joey built a sand castle on the beach and placed a toy flag in the highest tower but the wind knocked it down this afternoon', 57)	('the wind swept the castle down this afternoon', 45)	0	64	64
+120	('today joey built a sand castle on the beach and placed a toy flag in the highest tower but the wind knocked it down this afternoon', 57)	('the wind swept the castle down this afternoon', 45)	0	64	64
+121	('today joey built a sand castle on the beach and placed a toy flag in the highest tower but the wind knocked it down this afternoon', 57)	('the wind swept the castle down this afternoon', 45)	0	64	64
+122	('today joey built a sand castle on the beach and placed a toy flag in the highest tower but the wind knocked it down this afternoon', 57)	('the wind swept the castle down this afternoon', 45)	0	64	64
+123	('today joey built a sand castle on the beach and placed a toy flag in the highest tower but the wind knocked it down this afternoon', 57)	('the wind swept the castle down this afternoon', 45)	0	64	64
+124	"(""in the storm the tree fell and crashed through my house's roof"", 59)"	('i need to fix the roof', 33)	1	65	65
+125	"(""in the storm the tree fell and crashed through my house's roof"", 59)"	('i need to fix the roof', 33)	1	65	65
+126	"(""in the storm the tree fell and crashed through my house's roof"", 59)"	('i need to fix the roof', 33)	1	65	65
+127	"(""in the storm the tree fell and crashed through my house's roof"", 59)"	('i need to fix the roof', 33)	1	65	65
+128	('i filled the glass water until it was empty', 44)	('the bottle was empty', 13)	1	66	66
+129	('Alice looked for her friend Jade in the crowd. Since she always wears a red turban, Alice spotted her quickly.', 0)	('alice always wears a red turban so that alice could quickly spot her', 44)	0	67	67
+130	('the dog chased the cat and he stood on the top of a tree waiting to be found', 48)	('the cat waited up there', 19)	1	68	68
+131	('the dog chased the cat and he stood on the top of a tree waiting to be found', 48)	('the cat waited up there', 19)	1	68	68
+132	('the dog chased the cat and he stood on the top of a tree waiting to be found', 48)	('the cat waited up there', 19)	1	68	68
+133	('the dog chased the cat and he stood on the top of a tree waiting to be found', 48)	('the cat waited up there', 19)	1	68	68
+134	('it was a summer day and the dog was in the middle of the lawn after a while after a while he got up and moved to a place under the tree because it was hot', 51)	('the place beneath the tree was hot', 21)	0	69	69
+135	('it was a summer day and the dog was in the middle of the lawn after a while after a while he got up and moved to a place under the tree because it was hot', 51)	('the place beneath the tree was hot', 21)	0	69	69
+136	"(""george received free tickets to the play but he gave them to eric because he wasn't interested"", 43)"	"(""eric wasn't much interested"", 37)"	0	70	70
+137	"(""george received free tickets to the play but he gave them to eric because he wasn't interested"", 43)"	"(""eric wasn't much interested"", 37)"	0	70	70
+138	"(""george received free tickets to the play but he gave them to eric because he wasn't interested"", 43)"	"(""eric wasn't much interested"", 37)"	0	70	70
+139	"(""george received free tickets to the play but he gave them to eric because he wasn't interested"", 43)"	"(""eric wasn't much interested"", 37)"	0	70	70
+140	"(""george received free tickets to the play but he gave them to eric because he wasn't interested"", 43)"	"(""eric wasn't much interested"", 37)"	0	70	70
+141	"(""george received free tickets to the play but he gave them to eric because he wasn't interested"", 43)"	"(""eric wasn't much interested"", 37)"	0	70	70

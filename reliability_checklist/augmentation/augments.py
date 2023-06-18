@@ -16,7 +16,11 @@ from reliability_checklist.augmentation.sentiment_analysis.back_translate import
 from reliability_checklist.augmentation.sentiment_analysis.double_denial import (
     double_denial_augmentation,
 )
-
+from reliability_checklist.augmentation.mrpc.rand_sent_mrpc import rand_sentence_augmentation_mrpc
+from reliability_checklist.augmentation.qqp.max_match_aug import maximum_string_match_aug_qqp
+from reliability_checklist.augmentation.qnli.swap_ant_qnli import swap_antonym_aug_qnli
+from reliability_checklist.augmentation.rte.rand_sent_rte import rand_sentence_augmentation_rte
+from reliability_checklist.augmentation.sst2.double_denial import double_denial_augmentation_sst2
 
 class Augmentation:
     def __init__(self, __name__, dataset=None):
@@ -107,6 +111,45 @@ class double_denial_aug(Augmentation):
     def augment(self):
         self.dataset = self.augmenter.infer(self.dataset)
 
+class rand_sent_aug_mrpc(Augmentation):
+    def __init__(self, __name__="RAND_SENT_MRPC", dataset=None):
+        super().__init__(__name__, dataset)
+        self.augmenter = rand_sentence_augmentation_mrpc()
+
+    def augment(self):
+        self.dataset = self.augmenter.infer(self.dataset)
+
+class max_match_aug_qqp(Augmentation):
+    def __init__(self, __name__="MAX_MATCH_AUG", dataset=None):
+        super().__init__(__name__, dataset)
+        self.augmenter = maximum_string_match_aug_qqp()
+
+    def augment(self):
+        self.dataset = self.augmenter.infer(self.dataset)
+
+class swap_ant_aug_qnli(Augmentation):
+    def __init__(self, __name__="SWAP_ANT_QNLI", dataset=None):
+        super().__init__(__name__, dataset)
+        self.augmenter = swap_antonym_aug_qnli()
+
+    def augment(self):
+        self.dataset = self.augmenter.infer(self.dataset)
+
+class rand_sent_aug_rte(Augmentation):
+    def __init__(self, __name__="RAND_SENT_RTE", dataset=None):
+        super().__init__(__name__, dataset)
+        self.augmenter = rand_sentence_augmentation_rte()
+
+    def augment(self):
+        self.dataset = self.augmenter.infer(self.dataset)
+
+class double_denial_aug_sst2(Augmentation):
+    def __init__(self, __name__="DOUBLE_DENIAL_SST2", dataset=None, cols=None):
+        super().__init__(__name__, dataset)
+        self.augmenter = double_denial_augmentation_sst2(cols)
+
+    def augment(self):
+        self.dataset = self.augmenter.infer(self.dataset)
 
 class parrot_paraphraser(Augmentation):
     def __init__(

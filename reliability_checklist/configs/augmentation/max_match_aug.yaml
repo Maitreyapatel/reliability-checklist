@@ -1,0 +1,4 @@
+back_translate:
+  _target_: reliability_checklist.augmentation.augments.max_match_aug_qqp
+  _partial_: true
+  __name__: "MAX_MATCH_AUG"

@@ -1,0 +1,4 @@
+swap_ant_augmentation:
+  _target_: reliability_checklist.augmentation.augments.swap_ant_aug_qnli
+  _partial_: true
+  __name__: "SWAP_ANT_QNLI"

@@ -5,6 +5,7 @@
 
 defaults:
   - override /datamodule: wnli.yaml
+  - override /augmentation: wnli.yaml
   - override /model: inference.yaml
   - override /callbacks: general_evals.yaml
   - override /trainer: default.yaml
