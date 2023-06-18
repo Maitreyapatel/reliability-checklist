@@ -20,6 +20,7 @@ from reliability_checklist.augmentation.mrpc.rand_sent_mrpc import rand_sentence
 from reliability_checklist.augmentation.qqp.max_match_aug import maximum_string_match_aug_qqp
 from reliability_checklist.augmentation.qnli.swap_ant_qnli import swap_antonym_aug_qnli
 from reliability_checklist.augmentation.rte.rand_sent_rte import rand_sentence_augmentation_rte
+from reliability_checklist.augmentation.sst2.double_denial import double_denial_augmentation_sst2
 
 class Augmentation:
     def __init__(self, __name__, dataset=None):
@@ -138,6 +139,14 @@ class rand_sent_aug_rte(Augmentation):
     def __init__(self, __name__="RAND_SENT_RTE", dataset=None):
         super().__init__(__name__, dataset)
         self.augmenter = rand_sentence_augmentation_rte()
+
+    def augment(self):
+        self.dataset = self.augmenter.infer(self.dataset)
+
+class double_denial_aug_sst2(Augmentation):
+    def __init__(self, __name__="DOUBLE_DENIAL_SST2", dataset=None, cols=None):
+        super().__init__(__name__, dataset)
+        self.augmenter = double_denial_augmentation_sst2(cols)
 
     def augment(self):
         self.dataset = self.augmenter.infer(self.dataset)
